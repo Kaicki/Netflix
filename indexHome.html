@@ -1,1 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nitiflix Auto</title>
 
+<style>
+body {
+    margin: 0;
+    background: #000;
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: #111;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: red;
+}
+
+/* BANNER */
+.banner {
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.banner h1 {
+    font-size: 45px;
+    margin: 0;
+}
+
+.banner p {
+    max-width: 400px;
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+.banner .btn {
+    margin-top: 20px;
+    display: inline-block;
+    padding: 12px 20px;
+    background: red;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* CATALOG */
+.catalogo {
+    padding: 20px;
+}
+
+.categoria {
+    margin-bottom: 25px;
+}
+
+.categoria h2 {
+    margin-bottom: 10px;
+}
+
+.filmes-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.filmes-row img {
+    width: 180px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.filmes-row img:hover {
+    transform: scale(1.06);
+}
+
+/* PLAYER */
+.player {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player.hidden {
+    display: none;
+}
+
+.player video {
+    width: 80%;
+    max-height: 80%;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 25px;
+    background: red;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">NITIFLIX</div>
+</header>
+
+<!-- ⭐ BANNER ALEATÓRIO -->
+<section id="banner" class="banner">
+    <div>
+        <h1 id="bannerTitulo"></h1>
+        <p id="bannerDescricao"></p>
+        <a id="bannerBotao" class="btn" href="#">Assistir</a>
+    </div>
+</section>
+
+<!-- ⭐ RECIPIENTE DE CATEGORIAS -->
+<div id="catalogo" class="catalogo"></div>
+
+<!-- ⭐ PLAYER -->
+<div id="player" class="player hidden">
+    <video id="videoPlayer" controls></video>
+    <button class="close" onclick="fechar()">X</button>
+</div>
+
+
+<script>
+
+/* ===========================
+   🔻 AQUI VOCÊ EDITA OS FILMES
+   =========================== */
+
+const filmes = {
+
+    "Ação": [
+        {
+            titulo: "Mad Max",
+            capa: "https://i.imgur.com/QJ4A9Yp.jpeg",
+            descricao: "Um mundo pós-apocalíptico caótico.",
+            link: "LINK_VIDEO_1"
+        },
+        {
+            titulo: "John Wick",
+            capa: "https://i.imgur.com/yIMvCcm.jpeg",
+            descricao: "Um assassino lendário em busca de vingança.",
+            link: "LINK_VIDEO_2"
+        }
+    ],
+
+    "Comédia": [
+        {
+            titulo: "Gente Grande",
+            capa: "https://i.imgur.com/AsV8L1D.jpeg",
+            descricao: "Um reencontro cheio de loucuras.",
+            link: "LINK_VIDEO_3"
+        },
+        {
+            titulo: "As Branquelas",
+            capa: "https://i.imgur.com/3ozSi2k.jpeg",
+            descricao: "Agentes disfarçados de socialites.",
+            link: "LINK_VIDEO_4"
+        }
+    ],
+
+    "Terror": [
+        {
+            titulo: "Invocação do Mal",
+            capa: "https://i.imgur.com/4ca5hc5.jpeg",
+            descricao: "Uma entidade sombria atormenta uma família.",
+            link: "LINK_VIDEO_5"
+        }
+    ]
+
+};
+
+
+/* ===========================
+   ⭐ CRIA TODAS AS CATEGORIAS
+   =========================== */
+
+function montarCategorias() {
+    const catalogo = document.getElementById("catalogo");
+
+    // ⭐ Adiciona automaticamente RECOMENDADOS no topo
+    const recomendados = gerarRecomendados();
+
+    criarCategoria("Recomendados", recomendados, catalogo);
+
+    // ⭐ Cria categorias normais
+    Object.keys(filmes).forEach(categoria => {
+        criarCategoria(categoria, filmes[categoria], catalogo);
+    });
+}
+
+
+/* ===========================
+   ⭐ SISTEMA DE RECOMENDADOS
+   =========================== */
+
+function gerarRecomendados() {
+    let todos = [];
+
+    Object.keys(filmes).forEach(cat => {
+        todos.push(...filmes[cat]);
+    });
+
+    // Embaralha e pega 6
+    return todos.sort(() => Math.random() - 0.5).slice(0, 6);
+}
+
+
+/* ===========================
+   ⭐ CRIA UMA FILEIRA
+   =========================== */
+
+function criarCategoria(nome, lista, catalogo) {
+    const sec = document.createElement("div");
+    sec.className = "categoria";
+
+    sec.innerHTML = `<h2>${nome}</h2>`;
+
+    const row = document.createElement("div");
+    row.className = "filmes-row";
+
+    lista.forEach(filme => {
+        const img = document.createElement("img");
+        img.src = filme.capa;
+        img.title = filme.titulo;
+        img.onclick = () => play(filme.link);
+        row.appendChild(img);
+    });
+
+    sec.appendChild(row);
+    catalogo.appendChild(sec);
+}
+
+
+/* ===========================
+   ⭐ BANNER ALEATÓRIO
+   =========================== */
+
+function montarBanner() {
+    let todos = [];
+
+    Object.keys(filmes).forEach(cat => {
+        todos.push(...filmes[cat]);
+    });
+
+    const filme = todos[Math.floor(Math.random() * todos.length)];
+
+    document.getElementById("banner").style.backgroundImage =
+        `url(${filme.capa})`;
+
+    document.getElementById("bannerTitulo").textContent = filme.titulo;
+    document.getElementById("bannerDescricao").textContent = filme.descricao;
+    document.getElementById("bannerBotao").onclick = () => play(filme.link);
+}
+
+
+/* ===========================
+   🎥 PLAYER
+   =========================== */
+
+function play(url) {
+    const player = document.getElementById("player");
+    const video = document.getElementById("videoPlayer");
+
+    video.src = url;
+    player.classList.remove("hidden");
+    video.play();
+}
+
+function fechar() {
+    const player = document.getElementById("player");
+    const video = document.getElementById("videoPlayer");
+
+    video.pause();
+    video.src = "";
+    player.classList.add("hidden");
+}
+
+
+/* ===========================
+   🚀 INICIAR TUDO
+   =========================== */
+
+montarBanner();
+montarCategorias();
+
+</script>
+
+</body>
+</html>
