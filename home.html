@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nitiflix</title>
+<style>
+/* --- RESET E ESTILO GERAL --- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#141414; color:white; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x:hidden; }
+
+/* --- HEADER --- */
+header { position:fixed; top:0; width:100%; padding:20px 4%; background:linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0)); z-index:1000; display:flex; align-items:center; transition:background-color 0.3s; }
+header.black { background-color:#141414; }
+.logo { color:#E50914; font-size:30px; font-weight:bold; margin-right:40px; text-shadow:0 0 5px rgba(0,0,0,0.5); cursor:pointer; }
+nav a { color:#e5e5e5; text-decoration:none; margin-right:20px; font-size:14px; transition:color 0.3s; }
+nav a:hover { color:#b3b3b3; }
+
+/* --- HERO (DESTAQUE) --- */
+.hero { height:85vh; width:100%; background-size:cover; background-position:center; position:relative; transition: background-image 1s ease-in-out; }
+.hero-overlay { width:100%; height:100%; background: linear-gradient(to top,#141414 10%,transparent 90%),linear-gradient(to right,#141414 30%,transparent 70%); display:flex; flex-direction:column; justify-content:center; padding-left:4%; }
+.hero-title { font-size:60px; font-weight:800; margin-bottom:15px; max-width:600px; line-height:1.1; }
+.hero-desc { font-size:18px; max-width:500px; margin-bottom:20px; text-shadow:1px 1px 2px black; }
+.btn { padding:10px 25px; border:none; border-radius:4px; font-size:18px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; margin-right:10px; transition:transform 0.2s; }
+.btn:hover { transform:scale(1.05); }
+.btn-play { background:white; color:black; }
+.btn-info { background:rgba(109,109,110,0.7); color:white; }
+
+/* --- CARROSSEL --- */
+.section-title { margin-left:4%; margin-top:20px; font-size:20px; font-weight:bold; color:#e5e5e5; }
+.movie-row { display:flex; padding:20px 4%; overflow-x:auto; gap:10px; }
+.movie-row::-webkit-scrollbar { display:none; }
+.poster { min-width:200px; height:300px; background-color:#333; border-radius:4px; transition:transform 0.3s; cursor:pointer; background-size:cover; background-position:center; }
+.poster:hover { transform:scale(1.1); z-index:10; }
+
+/* --- MODAL DE DETALHES --- */
+.modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1500; justify-content:center; align-items:center; overflow-y:auto; padding:20px; }
+.modal-content { background-color:#181818; width:100%; max-width:850px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.7); position:relative; overflow:hidden; animation:modalAparecer 0.4s; }
+@keyframes modalAparecer { from {opacity:0; transform:translateY(50px);} to {opacity:1; transform:translateY(0);} }
+.modal-img { width:100%; height:400px; object-fit:cover; mask-image: linear-gradient(to bottom, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%); }
+.modal-info { padding:0 40px 40px 40px; margin-top:-50px; position:relative; }
+.modal-title { font-size:40px; font-weight:bold; margin-bottom:10px; }
+.modal-meta { display:flex; gap:15px; font-size:16px; color:#46d369; font-weight:bold; margin-bottom:15px; }
+.modal-year { color:#a3a3a3; }
+.modal-desc { font-size:16px; line-height:1.5; color:#fff; margin-bottom:20px; }
+.close-modal-btn { position:absolute; top:15px; right:15px; background:#181818; color:white; width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:24px; border:2px solid rgba(255,255,255,0.1); z-index:1600; }
+
+/* --- PLAYER DE VÍDEO --- */
+.video-container { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:2000; justify-content:center; align-items:center; }
+video { width:100%; height:100%; outline:none; }
+.close-video-btn { position:absolute; top:30px; right:30px; color:white; font-size:50px; cursor:pointer; z-index:2001; }
+</style>
+</head>
+<body>
+
+<header id="navbar">
+<div class="logo">NITIFLIX</div>
+<nav>
+<a href="#">Início</a>
+<a href="#">Séries</a>
+<a href="#">Filmes</a>
+<a href="#">Minha Lista</a>
+</nav>
+</header>
+
+<div class="hero">
+<div class="hero-overlay">
+<h1 class="hero-title"></h1>
+<p class="hero-desc"></p>
+<div class="buttons">
+<button class="btn btn-play">▶ Assistir</button>
+<button class="btn btn-info">ℹ Mais Informações</button>
+</div>
+</div>
+</div>
+
+<div class="section-title">Continuar Assistindo</div>
+<div class="movie-row" id="carrosselFilmes"></div>
+
+<div id="modalDetalhes" class="modal-overlay">
+<div class="modal-content">
+<div class="close-modal-btn" onclick="fecharDetalhes()">×</div>
+<img id="mdl-img" class="modal-img" src="" alt="Capa do Filme">
+<div class="modal-info">
+<h2 id="mdl-title" class="modal-title">Titulo do Filme</h2>
+<div class="modal-meta">
+<span id="mdl-match">98% Relevante</span>
+<span id="mdl-year" class="modal-year">2023</span>
+<span class="modal-year">HD</span>
+</div>
+<p id="mdl-desc" class="modal-desc">Descrição do filme aqui...</p>
+<button class="btn btn-play" onclick="fecharDetalhes(); abrirVideoDrive(modalDriveId)">▶ Assistir</button>
+</div>
+</div>
+</div>
+
+<div class="video-container" id="videoPlayer">
+<div class="close-video-btn" onclick="fecharVideo()">×</div>
+<video id="meuVideo" controls></video>
+</div>
+
+<script>
+// ----- EFEITO MENU SCROLL -----
+const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{ window.scrollY>50?nav.classList.add('black'):nav.classList.remove('black'); });
+
+// ----- ARRAY DE FILMES -----
+const filmes=[
+{titulo:'O Show de Truman', ano:'1998', relev:'98% Relevante', descricao:'Truman Burbank é um pacato vendedor de seguros que leva uma vida simples. Porém, ele não sabe que sua vida é na verdade um Reality Show assistido pelo mundo todo.', capa:'https://image.tmdb.org/t/p/original/e3P2qV7Z5872l408J0r6N7F765.jpg', modal:'https://image.tmdb.org/t/p/original/e3P2qV7Z5872l408J0r6N7F765.jpg', driveId:'filme1.mp4'},
+{titulo:'Um Sonho de Liberdade', ano:'1994', relev:'99% Relevante', descricao:'Dois homens presos se reúnem ao longo de vários anos, encontrando consolo e eventual redenção através de atos de decência comum.', capa:'https://image.tmdb.org/t/p/w500/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg', modal:'https://image.tmdb.org/t/p/original/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg', driveId:'filme2.mp4'},
+{titulo:'Homem-Aranha', ano:'2002', relev:'95% Relevante', descricao:'Após ser picado por uma aranha geneticamente modificada, Peter Parker ganha poderes incríveis e precisa defender a cidade.', capa:'https://image.tmdb.org/t/p/w500/sWvdnRFPPcLE7xtAEou7F9kP8vI.jpg', modal:'https://image.tmdb.org/t/p/original/sWvdnRFPPcLE7xtAEou7F9kP8vI.jpg', driveId:'filme3.mp4'},
+{titulo:'O Senhor dos Anéis', ano:'2001', relev:'98% Relevante', descricao:'Um jovem hobbit, Frodo, que encontrou o Um Anel que pertence ao Lorde das Trevas Sauron, começa sua jornada para a Montanha da Perdição.', capa:'https://image.tmdb.org/t/p/w500/vclShucpUmCJ8HFND1ODCke81ab.jpg', modal:'https://image.tmdb.org/t/p/original/vclShucpUmCJ8HFND1ODCke81ab.jpg', driveId:'filme4.mp4'}
+];
+
+// ----- CARROSSEL -----
+const carrossel=document.getElementById('carrosselFilmes');
+filmes.forEach(f=>{
+const div=document.createElement('div');
+div.classList.add('poster');
+div.style.backgroundImage=`url('${f.capa}')`;
+div.onclick=()=>abrirDetalhes(f.titulo,f.ano,f.relev,f.descricao,f.modal,f.driveId);
+carrossel.appendChild(div);
+});
+
+// ----- HERO ALEATÓRIO -----
+const heroTitle=document.querySelector('.hero-title');
+const heroDesc=document.querySelector('.hero-desc');
+const heroBtnPlay=document.querySelector('.btn-play');
+const heroBtnInfo=document.querySelector('.btn-info');
+const hero=document.querySelector('.hero');
+let modalDriveId='';
+
+function filmeAleatorio(){ return filmes[Math.floor(Math.random()*filmes.length)]; }
+function atualizarHero(){
+const f=filmeAleatorio();
+hero.style.backgroundImage=`url('${f.capa}')`;
+heroTitle.innerText=f.titulo;
+heroDesc.innerText=f.descricao;
+heroBtnPlay.onclick=()=>abrirVideoDrive(f.driveId);
+heroBtnInfo.onclick=()=>abrirDetalhes(f.titulo,f.ano,f.relev,f.descricao,f.modal,f.driveId);
+}
+window.onload=()=>{
+atualizarHero();
+setInterval(atualizarHero,30000);
+};
+
+// ----- MODAL -----
+const modal=document.getElementById('modalDetalhes');
+const mdlTitle=document.getElementById('mdl-title');
+const mdlYear=document.getElementById('mdl-year');
+const mdlMatch=document.getElementById('mdl-match');
+const mdlDesc=document.getElementById('mdl-desc');
+const mdlImg=document.getElementById('mdl-img');
+
+function abrirDetalhes(titulo,ano,relev,descricao,modalImg,driveId){
+mdlTitle.innerText=titulo;
+mdlYear.innerText=ano;
+mdlMatch.innerText=relev;
+mdlDesc.innerText=descricao;
+mdlImg.src=modalImg;
+modalDriveId=driveId;
+modal.style.display='flex';
+document.body.style.overflow='hidden';
+}
+function fecharDetalhes(){ modal.style.display='none'; document.body.style.overflow='auto'; }
+modal.addEventListener('click',(e)=>{ if(e.target===modal) fecharDetalhes(); });
+
+// ----- PLAYER -----
+const videoContainer=document.getElementById('videoPlayer');
+const videoTag=document.getElementById('meuVideo');
+
+function abrirVideoDrive(driveId){
+videoTag.src=driveId;
+videoContainer.style.display='flex';
+videoTag.play();
+}
+function fecharVideo(){ videoContainer.style.display='none'; videoTag.pause(); videoTag.currentTime=0; }
+</script>
+</body>
+</html>
