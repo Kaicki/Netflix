@@ -1,229 +1,274 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title></title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nitiflix — Estilo Netflix Atual</title>
 <style>
-    body {
-        margin: 0;
-        background: #000;
-        color: #fff;
-        font-family: Arial;
-    }
-  
-    #topbar {
-        width: 100%;
-        padding: 20px;
-        font-size: 32px;
-        font-weight: bold;
-        color: red;
-        letter-spacing: 2px;
-    }
+:root{
+  --bg:#040404;
+  --muted:#bdbdbd;
+  --accent:#e50914;
+  --card-w:140px;
+  --card-h:210px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:#fff;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
 
-    #banner {
-        width: 100%;
-        height: 25vh;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 40px;
-        box-shadow: inset 0px -200px 200px rgba(0,0,0,0.7);
-    }
+/* HEADER */
+header{
+  position:fixed;top:0;left:0;right:0;height:60px;
+  display:flex;align-items:center;padding:0 20px;z-index:60;
+  background:linear-gradient(180deg, rgba(4,4,4,0.85), transparent);
+}
+.logo{color:var(--accent);font-weight:800;font-size:24px;letter-spacing:1px}
 
-    #banner h1 { font-size: 45px; margin: 0; }
-    #banner p { width: 45%; opacity: 0.9; }
+/* HERO / BANNER */
+.hero{
+  width:100%;
+  height:35vh;
+  min-height:200px;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  padding:20px 30px;
+  transition:background-image .3s ease;
+}
+.hero::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:45%;
+  background:linear-gradient(to top, rgba(4,4,4,1), rgba(4,4,4,0));
+}
+.hero-content{
+  position:relative;z-index:3;max-width:720px;
+}
+.hero h1{font-size:28px;margin-bottom:6px;line-height:1; text-shadow:0 12px 20px rgba(0,0,0,0.7)}
+.hero p{color:var(--muted);margin-bottom:10px;max-width:60ch;font-size:14px}
+.hero .btns{display:flex;gap:8px}
+.btn{
+  border:0;padding:8px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px;
+}
+.btn-play{background:rgba(255,255,255,0.95);color:#000}
+.btn-info{background:rgba(109,109,110,0.7);color:#fff}
 
-    
-    .row { padding: 20px; }
-    .row h2 { margin-left: 10px; }
-    .cards { display: flex; gap: 12px; overflow-x: auto; }
+/* CONTENT */
+main{padding:10px 0 40px;margin-top:0}
+.section{margin-top:15px}
+.section h2{font-size:16px;margin-left:20px;margin-bottom:6px;color:#e6e6e6}
 
-    .card {
-        width: 160px;
-        height: 240px;
-        background-size: cover;
-        background-position: center;
-        border-radius: 6px;
-        cursor: pointer;
-        flex-shrink: 0;
-    }
+/* ROWS / CARDS */
+.row{
+  display:flex;gap:8px;padding:6px 20px 12px;overflow-x:auto;
+  scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
+}
+.row::-webkit-scrollbar{height:0;display:none}
+.row{ -ms-overflow-style: none; scrollbar-width: none; } 
 
-    #infoModal, #playerModal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        display: none;
-        background: rgba(0,0,0,.8);
-        justify-content: center;
-        align-items: center;
-    }
+.card{
+  width:var(--card-w);
+  height:var(--card-h);
+  border-radius:6px;
+  overflow:hidden;
+  position:relative;
+  flex:0 0 auto;
+  cursor:pointer;
+  transition:transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
+}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.card:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 20px 40px rgba(0,0,0,0.6);z-index:30}
+.card .overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.25));
+  opacity:0;transition:opacity .18s;
+}
+.card:hover .overlay{opacity:1}
+.play-icon{
+  width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,0.6);
+  display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.9);
+}
+.play-icon:after{
+  content:"";display:block;width:0;height:0;border-left:14px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px;
+}
 
-    #infoBox {
-        width: 80%;
-        max-width: 900px;
-        background: #111;
-        padding: 20px;
-        border-radius: 10px;
-        position: relative;
-    }
+/* fade edges */
+.row-wrap{position:relative}
+.row-wrap::before,.row-wrap::after{
+  content:"";position:absolute;top:0;bottom:0;width:48px;pointer-events:none;z-index:20;
+}
+.row-wrap::before{left:0;background:linear-gradient(to right, var(--bg), rgba(4,4,4,0))}
+.row-wrap::after{right:0;background:linear-gradient(to left, var(--bg), rgba(4,4,4,0))}
 
-    .closeBtn {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        font-size: 28px;
-        cursor: pointer;
-    }
+/* PLAYER MODAL */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:9999;padding:10px;
+}
+.modal iframe{width:90%;height:70%;border-radius:6px;border:0;background:#000}
+.modal .close{position:absolute;top:10px;right:12px;background:var(--accent);border:none;color:#fff;padding:6px 10px;font-weight:700;border-radius:4px;cursor:pointer}
 
-    #infoPoster {
-        width: 100%;
-        height: 300px;
-        background-size: cover;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
+/* INFO MODAL */
+.info-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;z-index:9998;padding:20px;overflow:auto}
+.info-card{max-width:700px;margin:20px auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:6px;box-shadow:0 20px 40px rgba(0,0,0,0.5)}
+.info-close{float:right;background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}
 
-    #infoBox button {
-        background: red;
-        border: none;
-        padding: 12px 20px;
-        margin-top: 10px;
-        cursor: pointer;
-        color: #fff;
-        border-radius: 5px;
-    }
+/* responsive tweaks */
+@media (max-width:1000px){
+  :root{--card-w:120px;--card-h:180px}
+  .hero{padding:20px 16px;height:28vh}
+  .hero h1{font-size:22px}
+  .hero p{font-size:12px}
+}
 
-    #playerContent {
-        width: 80%;
-        max-width: 900px;
-        background: #000;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    #playerFrame {
-        width: 100%;
-        height: 500px;
-        border: none;
-    }
+@media (max-width:600px){
+  :root{--card-w:100px;--card-h:160px}
+  header{padding:8px}
+  .hero{padding:16px 10px;height:25vh}
+  .hero h1{font-size:18px}
+  .hero p{font-size:11px}
+}
 </style>
-
 </head>
 <body>
 
-<div id="topbar">MEUFLIX</div>
-<div id="banner">
-    <h1 id="bannerTitle"></h1>
-    <p id="bannerDesc"></p>
+<header><div class="logo">NITIFLIX</div></header>
+
+<section id="hero" class="hero" aria-hidden="true">
+  <div class="hero-content">
+    <h1 id="heroTitle">Carregando...</h1>
+    <p id="heroDesc"></p>
+    <div class="hero-btns btns">
+      <button id="heroPlay" class="btn btn-play" style="display:none">▶ Assistir</button>
+      <button id="heroInfo" class="btn btn-info" style="display:none">ℹ Mais informações</button>
+    </div>
+  </div>
+</section>
+
+<main id="mainContent" role="main" aria-live="polite"></main>
+
+<div id="playerModal" class="modal" role="dialog" aria-modal="true">
+  <button class="close" id="closePlayer">Fechar</button>
+  <iframe id="playerFrame" allow="autoplay; fullscreen; picture-in-picture"></iframe>
 </div>
 
-<div id="categories"></div>
-
-<div id="infoModal">
-    <div id="infoBox">
-        <div class="closeBtn" onclick="closeInfo()">✖</div>
-        <div id="infoPoster"></div>
-        <h1 id="infoTitle"></h1>
-        <p id="infoDesc"></p>
-        <button id="watchBtn">ASSISTIR</button>
-    </div>
-</div>
-  
-<div id="playerModal">
-    <div class="closeBtn" onclick="closePlayer()">✖</div>
-    <div id="playerContent">
-        <iframe id="playerFrame"></iframe>
-    </div>
+<div id="infoModal" class="info-modal" role="dialog" aria-modal="true">
+  <div class="info-card" id="infoCard">
+    <button class="info-close" id="closeInfo">×</button>
+    <h2 id="infoTitle"></h2>
+    <p id="infoCategory" style="color:var(--muted);margin-top:6px"></p>
+    <p id="infoDesc" style="margin-top:12px;color:var(--muted);line-height:1.5"></p>
+  </div>
 </div>
 
 <script>
-
-const movies = [
-    {
-        title: "Homem-Aranha",
-        description: "Peter Parker ganha poderes e enfrenta o Duende Verde.",
-        poster: "URL_CAPA",
-        backdrop: "URL_BACKDROP",
-        driveId: "ID_DRIVE",
-        category: "Ação"
-    },
-    {
-        title: "Divertida Mente",
-        description: "As emoções dentro da mente de uma garota ganham vida.",
-        poster: "URL_CAPA",
-        backdrop: "URL_BACKDROP",
-        driveId: "ID_DRIVE",
-        category: "Animação"
-    }
+const filmes = [
+  { title:"A ERA DO GELO", id:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10", category:"animacao" },
+  { title:"PÂNICO", id:"1SgPD-5D19e7XWNEeVGTESieejwQJVVyv", img:"https://play-lh.googleusercontent.com/8b0izQwxU79gMpvcdSHqjcYlAmaTXgTL-rXrijHkeYfYEnQbmdj0pKOOUj3mqc3u8eE", category:"terror" },
+  { title:"LOGAN", id:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGolE5GF4i4m4ejLkGcpDtl6UfP_y4zglWWw&usqp=CAU", category:"acao" },
+  { title:"A 5 PASSOS DE VOCÊ", id:"132_vwYz5zXMQORAhWmTwQHlLZ47Tpu7V", img:"https://m.media-amazon.com/images/I/81Q11TuUR3L.jpg", category:"romance" },
+  { title:"SHOW DE TRUMAN", id:"1p0XrNZh9qmkzwb5cTUvY7pQwGUAocoIz", img:"https://http2.mlstatic.com/D_NQ_NP_805068-MLA75683634056_042024-OO.jpg", category:"outros" }
 ];
 
+const main = document.getElementById('mainContent');
+const hero = document.getElementById('hero');
+const heroTitle = document.getElementById('heroTitle');
+const heroDesc = document.getElementById('heroDesc');
+const heroPlay = document.getElementById('heroPlay');
+const heroInfo = document.getElementById('heroInfo');
 
-const categoriesDiv = document.getElementById("categories");
-let categories = {};
+function drivePreview(id){ return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : ''; }
+function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+const grouped = filmes.reduce((acc,f)=>{ if(!acc[f.category]) acc[f.category]=[]; acc[f.category].push(f); return acc; },{});
+const order = ['animacao','acao','comedia','aventura','romance','terror','outros'];
 
-movies.forEach(m => {
-    if (!categories[m.category]) categories[m.category] = [];
-    categories[m.category].push(m);
+function renderBanner(){
+  const chosen = pickRandom(filmes);
+  hero.style.backgroundImage = chosen.img ? `url('${chosen.img}')` : '';
+  heroTitle.textContent = chosen.title || '';
+  heroDesc.textContent = chosen.description || '';
+  heroPlay.style.display = chosen.id ? 'inline-block' : 'none';
+  heroInfo.style.display = 'inline-block';
+  heroPlay.onclick = ()=> openPlayer(chosen.id);
+  heroInfo.onclick = ()=> openInfo(chosen);
+}
+
+function render(){
+  main.innerHTML = '';
+  // banner
+  renderBanner();
+  // categories
+  for(const key of order){
+    const arr = grouped[key];
+    if(!arr || arr.length===0) continue;
+    main.appendChild(createSection(key, arr));
+  }
+}
+
+function createSection(title,list){
+  const section = document.createElement('section');
+  section.className = 'section';
+  const h = document.createElement('h2');
+  h.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+  section.appendChild(h);
+
+  const wrap = document.createElement('div');
+  wrap.className='row-wrap';
+  const row = document.createElement('div');
+  row.className='row';
+
+  list.forEach(item=>{
+    const c=document.createElement('div');
+    c.className='card';
+    c.tabIndex=0;
+    c.innerHTML=`<img src="${item.img}" alt="${item.title}"><div class="overlay"><div class="play-icon" title="Assistir"></div></div>`;
+    c.addEventListener('click',()=>openPlayer(item.id));
+    c.addEventListener('keydown',e=>{ if(e.key==='Enter') openPlayer(item.id) });
+    row.appendChild(c);
+  });
+  wrap.appendChild(row);
+  section.appendChild(wrap);
+  return section;
+}
+
+/* PLAYER / INFO */
+const playerModal = document.getElementById('playerModal');
+const playerFrame = document.getElementById('playerFrame');
+document.getElementById('closePlayer').addEventListener('click',()=>{ playerFrame.src=''; playerModal.style.display='none'; });
+function openPlayer(id){ playerFrame.src=drivePreview(id); playerModal.style.display='flex'; }
+
+const infoModal=document.getElementById('infoModal');
+const infoTitle=document.getElementById('infoTitle');
+const infoCategory=document.getElementById('infoCategory');
+const infoDesc=document.getElementById('infoDesc');
+document.getElementById('closeInfo').addEventListener('click',()=>{ infoModal.style.display='none'; });
+function openInfo(item){
+  infoTitle.textContent=item.title||'';
+  infoCategory.textContent=item.category?'Categoria: '+item.category:'';
+  infoDesc.textContent=item.description||'Sem sinopse disponível.';
+  infoModal.style.display='block';
+}
+
+/* ESC */
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(playerModal.style.display==='flex') playerFrame.src=''; playerModal.style.display='none';
+    if(infoModal.style.display==='block') infoModal.style.display='none';
+  }
 });
 
-Object.keys(categories).forEach(cat => {
-    const row = document.createElement("div");
-    row.className = "row";
+/* Banner automático a cada 30s */
+setInterval(renderBanner,30000);
 
-    row.innerHTML = `<h2>${cat}</h2><div class='cards'></div>`;
-
-    const container = row.querySelector(".cards");
-
-    categories[cat].forEach((m, i) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.style.backgroundImage = `url('${m.poster}')`;
-        card.onclick = () => openInfo(m);
-        container.appendChild(card);
-    });
-
-    categoriesDiv.appendChild(row);
-});
-
-function openInfo(m){
-    document.getElementById("infoPoster").style.backgroundImage = `url('${m.backdrop}')`;
-    document.getElementById("infoTitle").textContent = m.title;
-    document.getElementById("infoDesc").textContent = m.description;
-
-    document.getElementById("watchBtn").onclick = () => openPlayer(m.driveId);
-
-    document.getElementById("infoModal").style.display = "flex";
-}
-
-function closeInfo() {
-    document.getElementById("infoModal").style.display = "none";
-}
-  
-function openPlayer(id){
-    document.getElementById("playerFrame").src =
-        `https://drive.google.com/file/d/${id}/preview`;
-    document.getElementById("playerModal").style.display = "flex";
-}
-
-function closePlayer(){
-    document.getElementById("playerModal").style.display = "none";
-    document.getElementById("playerFrame").src = "";
-}
-  
-function changeBanner(){
-    const m = movies[Math.floor(Math.random() * movies.length)];
-    document.getElementById("banner").style.backgroundImage = `url('${m.backdrop}')`;
-    document.getElementById("bannerTitle").textContent = m.title;
-    document.getElementById("bannerDesc").textContent = m.description;
-}
-
-changeBanner();
-setInterval(changeBanner, 30000);
-
+/* Init */
+render();
 </script>
-
 </body>
 </html>
