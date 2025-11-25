@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Nitiflix — Estilo Netflix Atual</title>
+<title>Nitiflix — Info (estilo Prime)</title>
 <style>
   :root{
     --bg:#040404;
     --muted:#bdbdbd;
-    --accent:#e50914;
-    --card-w:220px;
-    --card-h:320px;
+    --accent:#00a8ff;
+    --card-w:160px;
+    --card-h:240px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -19,357 +19,351 @@
     color:#fff;
     font-family: Inter, Arial, Helvetica, sans-serif;
     -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
   }
-
-  /* HEADER minimal (only name) */
   header{
-    position:fixed;top:0;left:0;right:0;height:68px;
-    display:flex;align-items:center;padding:0 28px;z-index:60;
+    position:fixed;top:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;padding:0 20px;z-index:60;
     background:linear-gradient(180deg, rgba(4,4,4,0.85), transparent);
   }
-  .logo{color:var(--accent);font-weight:800;font-size:26px;letter-spacing:1px}
+  .logo{color:#E50914;font-weight:800;font-size:24px;letter-spacing:1px}
 
-  /* HERO / BANNER */
   .hero{
     width:100%;
-    height:72vh;
-    min-height:360px;
+    height:35vh;
+    min-height:180px;
     background-size:cover;
     background-position:center;
     position:relative;
     display:flex;
     align-items:flex-end;
-    padding:64px 48px;
-    transition:background-image .3s ease;
+    padding:18px 28px;
+    transition:background-image .5s ease;
   }
   .hero::after{
     content:"";
     position:absolute;left:0;right:0;bottom:0;height:45%;
     background:linear-gradient(to top, rgba(4,4,4,1), rgba(4,4,4,0));
   }
-  .hero-content{
-    position:relative;z-index:3;max-width:720px;
-  }
-  .hero h1{font-size:48px;margin-bottom:12px;line-height:1; text-shadow:0 18px 40px rgba(0,0,0,0.7)}
-  .hero p{color:var(--muted);margin-bottom:16px;max-width:60ch}
-  .hero .btns{display:flex;gap:12px}
-  .btn{
-    border:0;padding:12px 18px;border-radius:6px;font-weight:700;cursor:pointer;
-  }
+  .hero-content{position:relative;z-index:3;max-width:820px;display:flex;gap:14px;align-items:flex-start}
+  .hero-thumb{width:120px;height:170px;object-fit:cover;border-radius:8px;flex-shrink:0}
+  .hero-text h1{font-size:22px;margin-bottom:6px}
+  .hero-text p{color:var(--muted);font-size:14px;line-height:1.4;margin-bottom:10px}
+  .btn{border:0;padding:8px 12px;border-radius:999px;font-weight:700;cursor:pointer;font-size:13px}
   .btn-play{background:rgba(255,255,255,0.95);color:#000}
   .btn-info{background:rgba(109,109,110,0.7);color:#fff}
 
-  /* CONTENT */
-  main{padding:18px 0 80px;margin-top:0}
-  .section{margin-top:18px}
-  .section h2{font-size:20px;margin-left:28px;margin-bottom:8px;color:#e6e6e6}
+  main{padding:12px 0 40px;margin-top:60px}
+  .section{margin-top:14px}
+  .section h2{font-size:16px;margin-left:18px;margin-bottom:8px;color:#e6e6e6}
 
-  /* ROWS / CARDS */
-  .row{
-    display:flex;gap:12px;padding:8px 28px 22px;overflow-x:auto;
-    scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
-  }
-  /* hide scrollbar visually */
+  .row{display:flex;gap:8px;padding:6px 18px 12px;overflow-x:auto;scroll-behavior:smooth}
   .row::-webkit-scrollbar{height:0;display:none}
-  .row{ -ms-overflow-style: none; scrollbar-width: none; } 
-
-  .card{
-    width:var(--card-w);
-    height:var(--card-h);
-    border-radius:8px;
-    overflow:hidden;
-    position:relative;
-    flex:0 0 auto;
-    cursor:pointer;
-    transition:transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
-  }
+  .card{width:var(--card-w);height:var(--card-h);border-radius:6px;overflow:hidden;flex:0 0 auto;cursor:pointer;transition:transform .18s,box-shadow .18s}
   .card img{width:100%;height:100%;object-fit:cover;display:block}
-  .card:hover{transform:translateY(-6px) scale(1.06);box-shadow:0 30px 60px rgba(0,0,0,0.7);z-index:30}
-
-  /* play overlay on hover */
-  .card .overlay{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.25));
-    opacity:0;transition:opacity .18s;
-  }
-  .card:hover .overlay{opacity:1}
-  .play-icon{
-    width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.6);
-    display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,0.9);
-  }
-  .play-icon:after{
-    content:"";display:block;width:0;height:0;border-left:18px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px;
-  }
-
-  /* card title under card (small) */
-  .card-title{font-size:13px;color:var(--muted);margin-top:8px;text-align:left;padding-left:4px;max-width:var(--card-w)}
-
-  /* fade edges for rows */
-  .row-wrap{position:relative}
-  .row-wrap::before,.row-wrap::after{
-    content:"";position:absolute;top:0;bottom:0;width:64px;pointer-events:none;z-index:20;
-  }
-  .row-wrap::before{left:0;background:linear-gradient(to right, var(--bg), rgba(4,4,4,0))}
-  .row-wrap::after{right:0;background:linear-gradient(to left, var(--bg), rgba(4,4,4,0))}
-
-  /* PLAYER MODAL */
-  .modal{
-    position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;
-  }
-  .modal iframe{width:88%;height:80%;border-radius:8px;border:0;background:#000}
-  .modal .close{position:absolute;top:18px;right:22px;background:var(--accent);border:none;color:#fff;padding:10px 14px;font-weight:700;border-radius:6px;cursor:pointer}
+  .card:hover{transform:translateY(-4px) scale(1.04);box-shadow:0 20px 40px rgba(0,0,0,0.6);z-index:30}
 
   /* INFO MODAL */
-  .info-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;z-index:9998;padding:40px;overflow:auto}
-  .info-card{max-width:900px;margin:40px auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:24px;border-radius:8px;box-shadow:0 30px 60px rgba(0,0,0,0.7)}
-  .info-close{float:right;background:transparent;border:0;color:#fff;font-size:28px;cursor:pointer}
+  .info-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10010;
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.8));
+    backdrop-filter: blur(6px);
+  }
 
-  /* responsive tweaks */
+  .info-card {
+    width: 92%;
+    max-width: 920px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(8,8,8,0.95), rgba(12,12,12,0.95));
+    box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+    transform: translateY(24px) scale(0.98);
+    opacity: 0;
+    transition: transform .28s cubic-bezier(.2,.9,.2,1), opacity .22s;
+    position: relative;
+  }
+  .info-card.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .info-top {
+    display: flex;
+    gap: 18px;
+    padding: 20px;
+    align-items: flex-start;
+  }
+
+  .info-poster {
+    width: 260px;
+    height: 380px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .info-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .info-title {
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .info-meta {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .info-desc {
+    color: var(--muted);
+    line-height: 1.5;
+    font-size: 15px;
+    max-height: 7.2em;
+    overflow: auto;
+    padding-right: 6px;
+  }
+
+  .info-actions {
+    display:flex;
+    gap:10px;
+    margin-top:6px;
+    flex-wrap:wrap;
+  }
+  .action-play {
+    background: var(--accent);
+    color: #000;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-weight:700;
+    border: none;
+    cursor: pointer;
+  }
+  .action-list {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+  }
+
+  .info-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  .info-details {
+    display:flex;
+    gap:12px;
+    padding:0 20px 20px 20px;
+    align-items:center;
+    color:var(--muted);
+    font-size:14px;
+  }
+
   @media (max-width:1000px){
-    :root{--card-w:160px;--card-h:240px}
-    .hero{padding:36px 20px;height:54vh}
-    .hero h1{font-size:28px}
+    .info-poster{width:200px;height:300px}
+    .info-top{padding:16px}
+  }
+  @media (max-width:600px){
+    .info-card{width:96%;}
+    .info-top{flex-direction:column;align-items:center}
+    .info-poster{width:180px;height:260px}
+    .info-body{text-align:center}
+    .info-desc{max-height:none}
   }
 
-  @media (max-width:600px){
-    :root{--card-w:140px;--card-h:200px}
-    header{padding:12px}
-    .hero{padding:28px 16px;height:45vh}
-    .hero h1{font-size:22px}
-  }
+  .player-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:10020;padding:16px}
+  .player-box{width:90%;max-width:1100px;background:#000;border-radius:8px;overflow:hidden;position:relative}
+  .player-iframe{width:100%;height:70vh;border:0}
+  .player-close{position:absolute;top:10px;right:10px;background:var(--accent);border:none;color:#fff;padding:8px 10px;border-radius:6px;cursor:pointer}
 </style>
 </head>
 <body>
-
 <header><div class="logo">NITIFLIX</div></header>
 
-<!-- HERO / BANNER -->
-<section id="hero" class="hero" aria-hidden="true">
+<section id="hero" class="hero">
   <div class="hero-content">
-    <h1 id="heroTitle">Carregando...</h1>
-    <p id="heroDesc"></p>
-    <div class="hero-btns btns">
-      <button id="heroPlay" class="btn btn-play" style="display:none">▶ Assistir</button>
-      <button id="heroInfo" class="btn btn-info" style="display:none">ℹ Mais informações</button>
+    <img id="heroThumb" class="hero-thumb" src="" alt="Poster">
+    <div class="hero-text">
+      <h1 id="heroTitle">Carregando...</h1>
+      <p id="heroDesc"></p>
+      <div class="hero-actions">
+        <button id="heroPlay" class="btn btn-play" style="display:none">▶ Assistir</button>
+        <button id="heroInfo" class="btn btn-info" style="display:none">ℹ Mais informações</button>
+      </div>
     </div>
   </div>
 </section>
 
 <main id="mainContent" role="main" aria-live="polite"></main>
 
-<!-- PLAYER MODAL -->
-<div id="playerModal" class="modal" role="dialog" aria-modal="true">
-  <button class="close" id="closePlayer">Fechar</button>
-  <iframe id="playerFrame" allow="autoplay; fullscreen; picture-in-picture"></iframe>
-</div>
-
 <!-- INFO MODAL -->
 <div id="infoModal" class="info-modal" role="dialog" aria-modal="true">
-  <div class="info-card" id="infoCard">
-    <button class="info-close" id="closeInfo">×</button>
-    <h2 id="infoTitle"></h2>
-    <p id="infoCategory" style="color:var(--muted);margin-top:6px"></p>
-    <p id="infoDesc" style="margin-top:12px;color:var(--muted);line-height:1.5"></p>
+  <div class="info-card" id="infoCard" role="document">
+    <button class="info-close" id="infoClose">✖</button>
+    <div class="info-top">
+      <div class="info-poster" id="infoPoster" role="img" aria-label="Poster"></div>
+      <div class="info-body">
+        <div>
+          <div class="info-title" id="infoTitle">Título</div>
+          <div class="info-meta" id="infoCategory">Categoria • Ano</div>
+        </div>
+        <div class="info-desc" id="infoDesc">Descrição</div>
+        <div class="info-actions">
+          <button id="infoPlay" class="action-play">▶ Assistir</button>
+          <button id="infoList" class="action-list">+ Minha Lista</button>
+          <button id="infoMore" class="action-list">✓ Já vi</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-details" id="infoDetails"></div>
+  </div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div id="playerModal" class="player-modal" role="dialog" aria-modal="true">
+  <div class="player-box">
+    <button id="closePlayer" class="player-close">Fechar</button>
+    <iframe id="playerFrame" class="player-iframe" allow="autoplay; fullscreen; picture-in-picture"></iframe>
   </div>
 </div>
 
 <script>
-/* ============================
-   Banco de filmes (com categorias)
-   (usando os filmes que você enviou)
-   ============================ */
-const filmes = [
-  { title: "A ERA DO GELO", id:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10", category:"animacao" },
-  { title: "A ERA DO GELO 2", id:"1KhUII2uqa8AvIBAMKE2WGbc0x7GbXNpr", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKcr5v5P8FFMel_TRGhkUpFfbctKR_wyR3aJ3_kn6XCiYyPkqhveFJmUU&s=10", category:"animacao" },
-  { title: "A ERA DO GELO 3", id:"1SDqRYt17-d5ITPCaA2-m921MnB9Ytlq7", img:"https://br.web.img2.acsta.net/medias/nmedia/18/90/71/90/20109889.jpg", category:"animacao" },
-  { title: "WALL-E", id:"1MiqOg2g2MbKRwexsa1xxF4Uxa6Y9-saJ", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2sD2MrgnTDuGRtMq4IWj_4xzxmLZMQunaiF2Q83h7AcIeRcMW8coHbW0&s=10", category:"animacao" },
-  { title: "MONSTROS S.A", id:"1UB8XE4xI7dRV1z9FN6K0ByQszjTp7uiW", img:"https://media.fstatic.com/NANeWIPZEF1lkQSfoIlpDF2XSPg=/210x312/smart/filters:format(webp)/media/movies/covers/2019/07/monstros.jpg", category:"animacao" },
-  { title: "TREINAR SEU DRAGÃO LIVE", id:"1kAqZvenx25ZTe8dLoLzcze0CQta39dnf", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSWUhU5cn1rlRUR1wJXGET7DmkiKaj7W_KccUrr8cS6zeWfYjzcVnKpW8Y&s=10", category:"animacao" },
-  { title: "PONTE PARA TERABITIA", id:"1D0csjJowIdqEMzby_Lw1thUuTwtRGlKM", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwE04UdWSgjRtBMlcFQKwjHJ-duqlQd5QS_xq4BdRkAA&s=10", category:"aventura" },
-  { title: "BARBIE: A PRINCESA E A POP", id:"1EY7XtXNVyRcjhOD6qOlqWYM9PoO1Mpyg", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFKjgSviyJjWvIlHuPAE6Pq0n4oaJaxfGxeh4GItDIGQ&s=10", category:"animacao" },
-  { title: "BARBIE: ESCOLA DE PRINCESAS", id:"1FzqqQntWnAMTYFPrM5Hks9byD9oao6_h", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSv6iUELHn4hZsJVuRxFq6S5wWV4Rerafk-oYNkoILeg&s=10", category:"animacao" },
-  { title: "A PRINCESA E O SAPO", id:"1__kc1FMfND14ypIlKp7yTio58l0pLVKE", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeLjD1QfkLcVsJunTWX3juX6-GOreYn3LyzmWzjcJOtA&s=10", category:"animacao" },
-  { title: "SHREK 4", id:"16wU4J9beNwBIQiwyHvgjuzNMZw9GqpUW", img:"https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSXViRZX628FiyXvqFguo2czrDD92jNb5YuaHnrAd7OlnCzVjxIiVQUXd7spsftf2QvOX5dRngKWNEB8mcKJ5xTxbIdkWvHXHjQUD9d_Pk", category:"animacao" },
-
-  { title: "PÂNICO", id:"1SgPD-5D19e7XWNEeVGTESieejwQJVVyv", img:"https://play-lh.googleusercontent.com/8b0izQwxU79gMpvcdSHqjcYlAmaTXgTL-rXrijHkeYfYEnQbmdj0pKOOUj3mqc3u8eE", category:"terror" },
-  { title: "PÂNICO 2", id:"1oKudayXraNmTZksbW1Yu9g7GK672cmu3", img:"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTk25PVtpQYO4F63We8P1nEsTl8LuRpo2Kf_8BWA63m_27AP-T3tcga2C-l0DktvhYJyQiCYIrrYA8xez9z0a_KrUeW_dWHrLU_5bKuwo0", category:"terror" },
-  { title: "PÂNICO 4", id:"1ZPy4Z6vVfdyoazBWh6_ak6JWhMQhC7Fv", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmdgPNeSgF6zvLATdv2p-hrF4zThwBmG8c_XdGIvb_OCUs3W_tSgBPmOq1&s=10", category:"terror" },
-
-  { title: "A 5 PASSOS DE VOCÊ", id:"132_vwYz5zXMQORAhWmTwQHlLZ47Tpu7V", img:"https://m.media-amazon.com/images/I/81Q11TuUR3L.jpg", category:"romance" },
-
-  { title: "AS BEVERLY HILLS", id:"14ze444H1LYTK2Ke1sUdriALI4WTika7G", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV9lbluafX_xkj34rieGm4p2Keol1Daf3C244v3BIfDK6XgQVZoVko7XmlZKTY941zPJcguTjkXucrx9nnzWnjVu5YARPjlguAnp-pgA", category:"comedia" },
-  { title: "VOVÓ ZONA", id:"1ulcelUxXdYkJa9oU1Jrq5fbzTI-mMn8l", img:"https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRPZw1irUN2zmvWDsk7AiN2yAKX7L9GHhcnpkfOi9c1CzNl8XuHb0lmVhAnoIHYM9eXhemNF410M0DXwfTaGZ14ynPbt4nvJn25ahTOJao", category:"comedia" },
-  { title: "VOVÓ ZONA 2", id:"1zY6eLD1hX1IsFpR-KW3rClUYawmpDiYd", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5w9srZvRKRdt_oyNMw7NgInJowKl_5fPR-w&usqp=CAU", category:"comedia" },
-  { title: "VOVÓ ZONA 3", id:"1wKCPI2hC9EoLG8_oSbt7bpECFVbV93gY", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCii9nzJ5kJueqfUHYKlYFEkpn8vpyHwx83OqSn-xOK9NN7pxjHPKQfbMRatfycLF8Zq9PJW8re29EFYzxARud36VH-Js6CNqt3_QNDes", category:"comedia" },
-
-  { title: "TODO MUNDO EM PÂNICO", id:"1TYTeEmBQ567nyTv_6ojuZO4YIKaLUpE0", img:"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTQqpvfwXIN0iX3M3a0PCiYMcNq0umnsh8Ou8aB75O17qPrksoHcxv111nJZrCSsuMiqNmjpsEhvgPEzRLnrqsacx_VzzHoWsnGZMrX_A", category:"comedia" },
-  { title: "TODO MUNDO EM PÂNICO 2", id:"1AYZtSyrgH3d6rsZzihr6_rFaLpkSJlco", img:"https://m.media-amazon.com/images/M/MV5BNTU3YzY0ZTItZTc5YS00Y2I3LTllNmQtMzA2NTI3MzRjNWNhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", category:"comedia" },
-  { title: "TODO MUNDO EM PÂNICO 3", id:"19OgTImUTv5VFvOlIk43jeAJ0meDMKieF", img:"https://http2.mlstatic.com/D_NQ_NP_761070-MLA80251735178_112024-OO.jpg", category:"comedia" },
-  { title: "TODO MUNDO EM PÂNICO 4", id:"1vslg0UmMK68A2AROt7nnmqY540yUW--O", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlpOvVvIMGdYMdGklJ-SVq8gLzDD9RX0QYtrBobr-KhrJzF4K2a9yA8uBJ&s=10", category:"comedia" },
-  { title: "TODO MUNDO EM PÂNICO 5", id:"1aS8LIK8s06NbCc78JUu40tMHu3Si-R4r", img:"https://br.web.img2.acsta.net/c_310_420/pictures/210/061/21006150_20130515172540045.jpg", category:"comedia" },
-
-  { title: "NORBIT", id:"0ByfEzfBLMGseMnZOOEdVTk1NRXc", img:"https://cdn.imago-images.de/bild/st/0094692266/s.jpg", category:"comedia" },
-
-  { title: "LOGAN", id:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGolE5GF4i4m4ejLkGcpDtl6UfP_y4zglWWw&usqp=CAU", category:"acao" },
-  { title: "PERCY JACKSON", id:"11Dd1SONqq43elpk9gzgsbp_pyztumqQu", img:"https://br.web.img2.acsta.net/pictures/210/168/21016896_20130701202610322.jpg", category:"aventura" },
-  { title: "VIAGEM AO CENTRO", id:"1qFJgLbD2yckD3tXwgekhbtQ02z5oOEaz", img:"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRGs3cLTF6drMAFuB4wP5VoWhg-MoYzhxMkzK5Oym7eCO5l4xD2sdGmZy2d3mBB5NEuJ9F_nQjK9xZDQeavaNhUuOnn88KDxQpPbu0Nht0", category:"aventura" },
-  { title: "VIAGEM 2", id:"1JgxLGhwwPH5vvZJIM7JGH56A-KNSYqYp", img:"https://images.justwatch.com/poster/322331474/s718/viagem-2.jpg", category:"aventura" },
-
-  { title: "SHOW DE TRUMAN", id:"1p0XrNZh9qmkzwb5cTUvY7pQwGUAocoIz", img:"https://http2.mlstatic.com/D_NQ_NP_805068-MLA75683634056_042024-OO.jpg", category:"outros" }
+/* ================= DATA ================= */
+const movies = [
+  { title: "A ERA DO GELO", description:"Sid e Manny enfrentam aventuras congelantes.", poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10", backdrop:"", driveId:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM", category:"Animação", year:2002, relevance:80, duration:"1h 21m" },
+  { title: "WALL-E", description:"Um robô descobre o amor e a esperança.", poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2sD2MrgnTDuGRtMq4IWj_4xzxmLZMQunaiF2Q83h7AcIeRcMW8coHbW0&s=10", backdrop:"", driveId:"1MiqOg2g2MbKRwexsa1xxF4Uxa6Y9-saJ", category:"Animação", year:2008, relevance:95, duration:"1h 38m" },
+  { title: "LOGAN", description:"O Wolverine enfrenta desafios finais e intensos.", poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGolE5GF4i4m4ejLkGcpDtl6UfP_y4zglWWw&usqp=CAU", backdrop:"", driveId:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA", category:"Ação", year:2017, relevance:85, duration:"2h 17m" }
 ];
 
-/* helper */
-function drivePreview(id){ return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : ''; }
-
-/* Build categories map (only include categories that have items) */
-const grouped = filmes.reduce((acc, f) => {
-  if(!acc[f.category]) acc[f.category] = [];
-  acc[f.category].push(f);
-  return acc;
-}, {});
-
-/* order to display (Recomendados will be injected first) */
-const order = ['recomendados','animacao','acao','comedia','aventura','romance','terror','outros'];
-
-/* Render banner (random) and content */
+/* ================= HELPERS ================= */
 const main = document.getElementById('mainContent');
 const hero = document.getElementById('hero');
 const heroTitle = document.getElementById('heroTitle');
 const heroDesc = document.getElementById('heroDesc');
 const heroPlay = document.getElementById('heroPlay');
 const heroInfo = document.getElementById('heroInfo');
+const heroThumb = document.getElementById('heroThumb');
 
+function drivePreview(id){ return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : ''; }
 function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-/* flatten all movies */
-const allMovies = filmes.slice();
+const grouped = movies.reduce((acc,m)=>{ if(!acc[m.category]) acc[m.category]=[]; acc[m.category].push(m); return acc; },{});
+const order = ['Animação','Ação','Comédia','Aventura','Romance','Terror','Outros'];
 
-/* RECOMMENDED (12 randomized) */
-const recommended = allMovies.length ? shuffle(allMovies.slice()).slice(0,12) : [];
-
-/* render recommended first if exists */
-function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
-
-function render(){
+function renderSections(){
   main.innerHTML = '';
-  // banner
-  if(allMovies.length){
-    const chosen = pickRandom(allMovies);
-    hero.style.backgroundImage = chosen.img ? `url('${chosen.img}')` : '';
-    heroTitle.textContent = chosen.title || '';
-    heroDesc.textContent = chosen.description || '';
-    heroPlay.style.display = chosen.id ? 'inline-block' : 'none';
-    heroInfo.style.display = 'inline-block';
-    heroPlay.onclick = ()=> openPlayer(chosen.id);
-    heroInfo.onclick = ()=> openInfo(chosen);
-  } else {
-    hero.style.backgroundImage = '';
-    heroTitle.textContent = 'Bem-vindo à Nitiflix';
-    heroDesc.textContent = 'Adicione filmes ao banco de dados';
-    heroPlay.style.display = 'none';
-    heroInfo.style.display = 'none';
-  }
-
-  // Recomendados
-  if(recommended.length){
-    const sec = createSection('Recomendados', recommended);
-    main.appendChild(sec);
-  }
-
-  // other categories in order (only those that have items)
   for(const key of order){
-    if(key === 'recomendados') continue;
-    const arr = grouped[key];
-    if(!arr || arr.length === 0) continue;
-    const nameDisplay = capitalizeCategory(key);
-    const sec = createSection(nameDisplay, arr);
-    main.appendChild(sec);
+    const list = grouped[key];
+    if(!list || list.length===0) continue;
+    main.appendChild(createSection(key, list));
   }
 }
 
-/* create DOM section (row) */
-function createSection(title, list){
+function createSection(title,list){
   const section = document.createElement('section');
-  section.className = 'section';
-  const h = document.createElement('h2');
-  h.textContent = title;
+  section.className='section';
+  const h = document.createElement('h2'); h.textContent = title;
   section.appendChild(h);
-
-  const wrap = document.createElement('div');
-  wrap.className = 'row-wrap';
-  const row = document.createElement('div');
-  row.className = 'row';
+  const row = document.createElement('div'); row.className='row';
   list.forEach(item=>{
-    const c = document.createElement('div');
-    c.className = 'card';
-    c.tabIndex = 0;
-    c.innerHTML = `
-      <img src="${item.img}" alt="${escapeHtml(item.title)}">
-      <div class="overlay"><div class="play-icon" title="Assistir"></div></div>
-    `;
-    c.addEventListener('click', ()=> openPlayer(item.id));
-    c.addEventListener('keydown', e=>{ if(e.key==='Enter') openPlayer(item.id) });
+    const c = document.createElement('div'); c.className='card';
+    c.innerHTML = `<img src="${item.poster}" alt="${escapeHtml(item.title)}">`;
+    c.addEventListener('click', ()=> openInfo(item));
     row.appendChild(c);
-
-    // small accessible label under row (hidden for layout consistency)
-    // but we will not show per Netflix (they show only images)
   });
-  wrap.appendChild(row);
-  section.appendChild(wrap);
+  section.appendChild(row);
   return section;
 }
 
-function capitalizeCategory(k){
-  if(!k) return '';
-  return k.charAt(0).toUpperCase() + k.slice(1);
+function escapeHtml(str){ return (str+'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+/* HERO */
+let currentHero = null;
+function renderHero(){
+  const chosen = pickRandom(movies);
+  currentHero = chosen;
+  hero.style.backgroundImage = chosen.backdrop ? `url('${chosen.backdrop}')` : `url('${chosen.poster}')`;
+  heroThumb.src = chosen.poster || '';
+  heroTitle.textContent = chosen.title || '';
+  heroDesc.textContent = chosen.description || '';
+  heroPlay.style.display = chosen.driveId ? 'inline-block' : 'none';
+  heroInfo.style.display = 'inline-block';
+  heroPlay.onclick = ()=> openPlayer(chosen.driveId);
+  heroInfo.onclick = ()=> openInfo(chosen);
 }
 
-/* ============================
-   PLAYER / INFO modals
-   ============================ */
-const playerModal = document.getElementById('playerModal');
-const playerFrame = document.getElementById('playerFrame');
-const closePlayerBtn = document.getElementById('closePlayer');
-
-function openPlayer(id){
-  if(!id){ alert('Este conteúdo não possui ID do Drive.'); return; }
-  playerFrame.src = drivePreview(id);
-  playerModal.style.display = 'flex';
-  playerFrame.focus();
-  window.scrollTo(0,0);
-}
-closePlayerBtn.addEventListener('click', closePlayer);
-function closePlayer(){ playerFrame.src=''; playerModal.style.display='none' }
-
+/* INFO MODAL */
 const infoModal = document.getElementById('infoModal');
+const infoCard = document.getElementById('infoCard');
+const infoPoster = document.getElementById('infoPoster');
 const infoTitle = document.getElementById('infoTitle');
 const infoCategory = document.getElementById('infoCategory');
 const infoDesc = document.getElementById('infoDesc');
-const closeInfoBtn = document.getElementById('closeInfo');
+const infoPlay = document.getElementById('infoPlay');
+const infoList = document.getElementById('infoList');
+const infoMore = document.getElementById('infoMore');
+const infoClose = document.getElementById('infoClose');
+const infoDetails = document.getElementById('infoDetails');
 
-function openInfo(item){
-  infoTitle.textContent = item.title || '';
-  infoCategory.textContent = item.category ? 'Categoria: ' + capitalizeCategory(item.category) : '';
-  infoDesc.textContent = item.description || 'Sem sinopse disponível.';
-  infoModal.style.display = 'block';
-  window.scrollTo(0,0);
+function openInfo(movie){
+  infoPoster.style.backgroundImage = `url('${movie.poster}')`;
+  infoTitle.textContent = movie.title;
+  infoCategory.textContent = `${movie.category} • ${movie.year}`;
+  infoDesc.textContent = movie.description;
+  infoPlay.onclick = ()=> openPlayer(movie.driveId);
+  infoDetails.textContent = `Relevância: ${movie.relevance}% • Duração: ${movie.duration}`;
+  infoModal.style.display = 'flex';
+  setTimeout(()=>infoCard.classList.add('show'), 10);
 }
-closeInfoBtn.addEventListener('click', ()=> { infoModal.style.display='none' });
 
-window.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape'){
-    if(playerModal.style.display === 'flex') closePlayer();
-    if(infoModal.style.display === 'block') infoModal.style.display='none';
-  }
-});
+infoClose.onclick = ()=> closeInfo();
+infoModal.onclick = e => { if(e.target === infoModal) closeInfo(); };
+function closeInfo(){
+  infoCard.classList.remove('show');
+  setTimeout(()=> infoModal.style.display='none', 220);
+}
 
-/* utility escape */
-function escapeHtml(str){ return (str+'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+/* PLAYER MODAL */
+const playerModal = document.getElementById('playerModal');
+const playerFrame = document.getElementById('playerFrame');
+const closePlayer = document.getElementById('closePlayer');
 
-/* init */
-render();
+function openPlayer(driveId){
+  if(!driveId) return;
+  playerFrame.src = drivePreview(driveId);
+  playerModal.style.display = 'flex';
+}
 
+closePlayer.onclick = ()=> closePlayerModal();
+playerModal.onclick = e => { if(e.target === playerModal) closePlayerModal(); };
+
+function closePlayerModal(){
+  playerFrame.src='';
+  playerModal.style.display='none';
+}
+
+/* ================= INIT ================= */
+renderSections();
+renderHero();
 </script>
 </body>
 </html>
