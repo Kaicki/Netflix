@@ -9,8 +9,8 @@
   --bg:#040404;
   --muted:#bdbdbd;
   --accent:#e50914;
-  --card-w:140px;
-  --card-h:210px;
+  --card-w:220px;
+  --card-h:320px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -20,28 +20,29 @@ body{
   font-family: Inter, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
 }
 
 /* HEADER */
 header{
-  position:fixed;top:0;left:0;right:0;height:60px;
-  display:flex;align-items:center;padding:0 20px;z-index:60;
+  position:fixed;top:0;left:0;right:0;height:68px;
+  display:flex;align-items:center;padding:0 28px;z-index:60;
   background:linear-gradient(180deg, rgba(4,4,4,0.85), transparent);
 }
-.logo{color:var(--accent);font-weight:800;font-size:24px;letter-spacing:1px}
+.logo{color:var(--accent);font-weight:800;font-size:26px;letter-spacing:1px}
 
 /* HERO / BANNER */
 .hero{
   width:100%;
-  height:35vh;
-  min-height:200px;
+  height:55vh;
+  min-height:250px;
   background-size:cover;
   background-position:center;
   position:relative;
   display:flex;
   align-items:flex-end;
-  padding:20px 30px;
-  transition:background-image .3s ease;
+  padding:32px 48px;
+  transition:background-image .5s ease;
 }
 .hero::after{
   content:"";
@@ -49,25 +50,35 @@ header{
   background:linear-gradient(to top, rgba(4,4,4,1), rgba(4,4,4,0));
 }
 .hero-content{
-  position:relative;z-index:3;max-width:720px;
+  position:relative;z-index:3;max-width:720px; display:flex; align-items:flex-start; gap:16px;
 }
-.hero h1{font-size:28px;margin-bottom:6px;line-height:1; text-shadow:0 12px 20px rgba(0,0,0,0.7)}
-.hero p{color:var(--muted);margin-bottom:10px;max-width:60ch;font-size:14px}
-.hero .btns{display:flex;gap:8px}
+.hero-content img{
+  width:150px;
+  height:220px;
+  object-fit:cover;
+  border-radius:8px;
+  flex-shrink:0;
+}
+.hero-text{
+  max-width:500px;
+}
+.hero h1{font-size:28px;margin-bottom:8px; text-shadow:0 12px 30px rgba(0,0,0,0.7)}
+.hero p{color:var(--muted);margin-bottom:16px;max-width:100%;line-height:1.4}
+.hero .btns{display:flex;gap:12px}
 .btn{
-  border:0;padding:8px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px;
+  border:0;padding:10px 16px;border-radius:6px;font-weight:700;cursor:pointer;
 }
 .btn-play{background:rgba(255,255,255,0.95);color:#000}
 .btn-info{background:rgba(109,109,110,0.7);color:#fff}
 
 /* CONTENT */
-main{padding:10px 0 40px;margin-top:0}
-.section{margin-top:15px}
-.section h2{font-size:16px;margin-left:20px;margin-bottom:6px;color:#e6e6e6}
+main{padding:18px 0 80px;margin-top:68px}
+.section{margin-top:18px}
+.section h2{font-size:20px;margin-left:28px;margin-bottom:8px;color:#e6e6e6}
 
 /* ROWS / CARDS */
 .row{
-  display:flex;gap:8px;padding:6px 20px 12px;overflow-x:auto;
+  display:flex;gap:12px;padding:8px 28px 22px;overflow-x:auto;
   scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
 }
 .row::-webkit-scrollbar{height:0;display:none}
@@ -76,7 +87,7 @@ main{padding:10px 0 40px;margin-top:0}
 .card{
   width:var(--card-w);
   height:var(--card-h);
-  border-radius:6px;
+  border-radius:8px;
   overflow:hidden;
   position:relative;
   flex:0 0 auto;
@@ -84,7 +95,9 @@ main{padding:10px 0 40px;margin-top:0}
   transition:transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
 }
 .card img{width:100%;height:100%;object-fit:cover;display:block}
-.card:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 20px 40px rgba(0,0,0,0.6);z-index:30}
+.card:hover{transform:translateY(-6px) scale(1.06);box-shadow:0 30px 60px rgba(0,0,0,0.7);z-index:30}
+
+/* overlay play */
 .card .overlay{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.25));
@@ -92,47 +105,46 @@ main{padding:10px 0 40px;margin-top:0}
 }
 .card:hover .overlay{opacity:1}
 .play-icon{
-  width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,0.6);
-  display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.9);
+  width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.6);
+  display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,0.9);
 }
 .play-icon:after{
-  content:"";display:block;width:0;height:0;border-left:14px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px;
+  content:"";display:block;width:0;height:0;border-left:18px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px;
 }
 
 /* fade edges */
 .row-wrap{position:relative}
 .row-wrap::before,.row-wrap::after{
-  content:"";position:absolute;top:0;bottom:0;width:48px;pointer-events:none;z-index:20;
+  content:"";position:absolute;top:0;bottom:0;width:64px;pointer-events:none;z-index:20;
 }
 .row-wrap::before{left:0;background:linear-gradient(to right, var(--bg), rgba(4,4,4,0))}
 .row-wrap::after{right:0;background:linear-gradient(to left, var(--bg), rgba(4,4,4,0))}
 
 /* PLAYER MODAL */
 .modal{
-  position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:9999;padding:10px;
+  position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;
 }
-.modal iframe{width:90%;height:70%;border-radius:6px;border:0;background:#000}
-.modal .close{position:absolute;top:10px;right:12px;background:var(--accent);border:none;color:#fff;padding:6px 10px;font-weight:700;border-radius:4px;cursor:pointer}
+.modal iframe{width:88%;height:80%;border-radius:8px;border:0;background:#000}
+.modal .close{position:absolute;top:18px;right:22px;background:var(--accent);border:none;color:#fff;padding:10px 14px;font-weight:700;border-radius:6px;cursor:pointer}
 
 /* INFO MODAL */
-.info-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;z-index:9998;padding:20px;overflow:auto}
-.info-card{max-width:700px;margin:20px auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:6px;box-shadow:0 20px 40px rgba(0,0,0,0.5)}
-.info-close{float:right;background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}
+.info-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;z-index:9998;padding:40px;overflow:auto}
+.info-card{max-width:900px;margin:40px auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:24px;border-radius:8px;box-shadow:0 30px 60px rgba(0,0,0,0.7)}
+.info-close{float:right;background:transparent;border:0;color:#fff;font-size:28px;cursor:pointer}
 
-/* responsive tweaks */
+/* responsive */
 @media (max-width:1000px){
-  :root{--card-w:120px;--card-h:180px}
-  .hero{padding:20px 16px;height:28vh}
-  .hero h1{font-size:22px}
-  .hero p{font-size:12px}
+  :root{--card-w:160px;--card-h:240px}
+  .hero{padding:24px 20px;height:45vh}
+  .hero h1{font-size:24px}
+  .hero-content img{width:120px;height:180px;}
 }
-
 @media (max-width:600px){
-  :root{--card-w:100px;--card-h:160px}
-  header{padding:8px}
-  .hero{padding:16px 10px;height:25vh}
-  .hero h1{font-size:18px}
-  .hero p{font-size:11px}
+  :root{--card-w:140px;--card-h:200px}
+  header{padding:12px}
+  .hero{padding:16px 16px;height:40vh}
+  .hero h1{font-size:20px}
+  .hero-content img{width:90px;height:135px;}
 }
 </style>
 </head>
@@ -140,24 +152,30 @@ main{padding:10px 0 40px;margin-top:0}
 
 <header><div class="logo">NITIFLIX</div></header>
 
+<!-- HERO / BANNER -->
 <section id="hero" class="hero" aria-hidden="true">
   <div class="hero-content">
-    <h1 id="heroTitle">Carregando...</h1>
-    <p id="heroDesc"></p>
-    <div class="hero-btns btns">
-      <button id="heroPlay" class="btn btn-play" style="display:none">▶ Assistir</button>
-      <button id="heroInfo" class="btn btn-info" style="display:none">ℹ Mais informações</button>
+    <img id="heroThumb" src="" alt="Thumbnail">
+    <div class="hero-text">
+      <h1 id="heroTitle">Carregando...</h1>
+      <p id="heroDesc"></p>
+      <div class="hero-btns btns">
+        <button id="heroPlay" class="btn btn-play" style="display:none">▶ Assistir</button>
+        <button id="heroInfo" class="btn btn-info" style="display:none">ℹ Mais informações</button>
+      </div>
     </div>
   </div>
 </section>
 
 <main id="mainContent" role="main" aria-live="polite"></main>
 
+<!-- PLAYER MODAL -->
 <div id="playerModal" class="modal" role="dialog" aria-modal="true">
   <button class="close" id="closePlayer">Fechar</button>
   <iframe id="playerFrame" allow="autoplay; fullscreen; picture-in-picture"></iframe>
 </div>
 
+<!-- INFO MODAL -->
 <div id="infoModal" class="info-modal" role="dialog" aria-modal="true">
   <div class="info-card" id="infoCard">
     <button class="info-close" id="closeInfo">×</button>
@@ -168,13 +186,29 @@ main{padding:10px 0 40px;margin-top:0}
 </div>
 
 <script>
+// ======= BANCO DE FILMES =======
 const filmes = [
-  { title:"A ERA DO GELO", id:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10", category:"animacao" },
-  { title:"PÂNICO", id:"1SgPD-5D19e7XWNEeVGTESieejwQJVVyv", img:"https://play-lh.googleusercontent.com/8b0izQwxU79gMpvcdSHqjcYlAmaTXgTL-rXrijHkeYfYEnQbmdj0pKOOUj3mqc3u8eE", category:"terror" },
-  { title:"LOGAN", id:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGolE5GF4i4m4ejLkGcpDtl6UfP_y4zglWWw&usqp=CAU", category:"acao" },
-  { title:"A 5 PASSOS DE VOCÊ", id:"132_vwYz5zXMQORAhWmTwQHlLZ47Tpu7V", img:"https://m.media-amazon.com/images/I/81Q11TuUR3L.jpg", category:"romance" },
-  { title:"SHOW DE TRUMAN", id:"1p0XrNZh9qmkzwb5cTUvY7pQwGUAocoIz", img:"https://http2.mlstatic.com/D_NQ_NP_805068-MLA75683634056_042024-OO.jpg", category:"outros" }
+  { title: "A ERA DO GELO", id:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10", thumb:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10", category:"animacao", description:"Um grupo de animais da era do gelo enfrenta aventuras e desafios." },
+  { title: "WALL-E", id:"1MiqOg2g2MbKRwexsa1xxF4Uxa6Y9-saJ", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2sD2MrgnTDuGRtMq4IWj_4xzxmLZMQunaiF2Q83h7AcIeRcMW8coHbW0&s=10", thumb:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2sD2MrgnTDuGRtMq4IWj_4xzxmLZMQunaiF2Q83h7AcIeRcMW8coHbW0&s=10", category:"animacao", description:"Robô coletor de lixo encontra um novo propósito no planeta Terra." },
+  { title: "PÂNICO", id:"1SgPD-5D19e7XWNEeVGTESieejwQJVVyv", img:"https://play-lh.googleusercontent.com/8b0izQwxU79gMpvcdSHqjcYlAmaTXgTL-rXrijHkeYfYEnQbmdj0pKOOUj3mqc3u8eE", thumb:"https://play-lh.googleusercontent.com/8b0izQwxU79gMpvcdSHqjcYlAmaTXgTL-rXrijHkeYfYEnQbmdj0pKOOUj3mqc3u8eE", category:"terror", description:"Jovens são perseguidos por um assassino misterioso." },
+  { title: "LOGAN", id:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA", img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGolE5GF4i4m4ejLkGcpDtl6UfP_y4zglWWw&usqp=CAU", thumb:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGolE5GF4i4m4ejLkGcpDtl6UfP_y4zglWWw&usqp=CAU", category:"acao", description:"O mutante Logan luta para proteger uma jovem mutante." },
+  { title: "A 5 PASSOS DE VOCÊ", id:"132_vwYz5zXMQORAhWmTwQHlLZ47Tpu7V", img:"https://m.media-amazon.com/images/I/81Q11TuUR3L.jpg", thumb:"https://m.media-amazon.com/images/I/81Q11TuUR3L.jpg", category:"romance", description:"Dois jovens com doenças terminais se apaixonam." }
 ];
+
+// Helper
+function drivePreview(id){ return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : ''; }
+function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+// Agrupar por categoria
+const grouped = filmes.reduce((acc, f)=>{
+  if(!acc[f.category]) acc[f.category] = [];
+  acc[f.category].push(f);
+  return acc;
+},{});
+
+// Ordem de exibição
+const order = ['animacao','acao','comedia','aventura','romance','terror','outros'];
 
 const main = document.getElementById('mainContent');
 const hero = document.getElementById('hero');
@@ -182,16 +216,15 @@ const heroTitle = document.getElementById('heroTitle');
 const heroDesc = document.getElementById('heroDesc');
 const heroPlay = document.getElementById('heroPlay');
 const heroInfo = document.getElementById('heroInfo');
+const heroThumb = document.getElementById('heroThumb');
 
-function drivePreview(id){ return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : ''; }
-function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
-const grouped = filmes.reduce((acc,f)=>{ if(!acc[f.category]) acc[f.category]=[]; acc[f.category].push(f); return acc; },{});
-const order = ['animacao','acao','comedia','aventura','romance','terror','outros'];
+let currentBanner = null;
 
 function renderBanner(){
   const chosen = pickRandom(filmes);
+  currentBanner = chosen;
   hero.style.backgroundImage = chosen.img ? `url('${chosen.img}')` : '';
+  heroThumb.src = chosen.thumb || chosen.img;
   heroTitle.textContent = chosen.title || '';
   heroDesc.textContent = chosen.description || '';
   heroPlay.style.display = chosen.id ? 'inline-block' : 'none';
@@ -200,75 +233,87 @@ function renderBanner(){
   heroInfo.onclick = ()=> openInfo(chosen);
 }
 
-function render(){
+function renderSections(){
   main.innerHTML = '';
-  // banner
-  renderBanner();
-  // categories
   for(const key of order){
-    const arr = grouped[key];
-    if(!arr || arr.length===0) continue;
-    main.appendChild(createSection(key, arr));
+    const list = grouped[key];
+    if(!list || list.length === 0) continue;
+    const sec = createSection(capitalize(key), list);
+    main.appendChild(sec);
   }
 }
 
-function createSection(title,list){
+function createSection(title, list){
   const section = document.createElement('section');
   section.className = 'section';
   const h = document.createElement('h2');
-  h.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+  h.textContent = title;
   section.appendChild(h);
 
   const wrap = document.createElement('div');
-  wrap.className='row-wrap';
+  wrap.className = 'row-wrap';
   const row = document.createElement('div');
-  row.className='row';
+  row.className = 'row';
 
   list.forEach(item=>{
-    const c=document.createElement('div');
-    c.className='card';
-    c.tabIndex=0;
-    c.innerHTML=`<img src="${item.img}" alt="${item.title}"><div class="overlay"><div class="play-icon" title="Assistir"></div></div>`;
-    c.addEventListener('click',()=>openPlayer(item.id));
-    c.addEventListener('keydown',e=>{ if(e.key==='Enter') openPlayer(item.id) });
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.tabIndex = 0;
+    c.innerHTML = `
+      <img src="${item.img}" alt="${escapeHtml(item.title)}">
+      <div class="overlay"><div class="play-icon" title="Assistir"></div></div>
+    `;
+    c.addEventListener('click', ()=> openPlayer(item.id));
+    c.addEventListener('keydown', e=>{ if(e.key==='Enter') openPlayer(item.id) });
     row.appendChild(c);
   });
+
   wrap.appendChild(row);
   section.appendChild(wrap);
   return section;
 }
 
-/* PLAYER / INFO */
+function capitalize(str){ return str.charAt(0).toUpperCase()+str.slice(1); }
+function escapeHtml(str){ return (str+'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+// PLAYER
 const playerModal = document.getElementById('playerModal');
 const playerFrame = document.getElementById('playerFrame');
-document.getElementById('closePlayer').addEventListener('click',()=>{ playerFrame.src=''; playerModal.style.display='none'; });
-function openPlayer(id){ playerFrame.src=drivePreview(id); playerModal.style.display='flex'; }
+document.getElementById('closePlayer').addEventListener('click', closePlayer);
+function openPlayer(id){
+  if(!id){ alert('Este conteúdo não possui ID do Drive.'); return; }
+  playerFrame.src = drivePreview(id);
+  playerModal.style.display = 'flex';
+}
+function closePlayer(){ playerFrame.src=''; playerModal.style.display='none'; }
 
-const infoModal=document.getElementById('infoModal');
-const infoTitle=document.getElementById('infoTitle');
-const infoCategory=document.getElementById('infoCategory');
-const infoDesc=document.getElementById('infoDesc');
-document.getElementById('closeInfo').addEventListener('click',()=>{ infoModal.style.display='none'; });
+// INFO
+const infoModal = document.getElementById('infoModal');
+const infoTitle = document.getElementById('infoTitle');
+const infoCategory = document.getElementById('infoCategory');
+const infoDesc = document.getElementById('infoDesc');
+document.getElementById('closeInfo').addEventListener('click', ()=> { infoModal.style.display='none' });
+
 function openInfo(item){
-  infoTitle.textContent=item.title||'';
-  infoCategory.textContent=item.category?'Categoria: '+item.category:'';
-  infoDesc.textContent=item.description||'Sem sinopse disponível.';
-  infoModal.style.display='block';
+  infoTitle.textContent = item.title || '';
+  infoCategory.textContent = item.category ? 'Categoria: ' + capitalize(item.category) : '';
+  infoDesc.textContent = item.description || 'Sem descrição.';
+  infoModal.style.display = 'block';
 }
 
-/* ESC */
-window.addEventListener('keydown',e=>{
+// Tecla ESC
+window.addEventListener('keydown', e=>{
   if(e.key==='Escape'){
-    if(playerModal.style.display==='flex') playerFrame.src=''; playerModal.style.display='none';
+    if(playerModal.style.display==='flex') closePlayer();
     if(infoModal.style.display==='block') infoModal.style.display='none';
   }
 });
 
-/* Banner automático a cada 30s */
-setInterval(renderBanner,30000);
-
-/* Init */
-render();
+// Inicialização
+renderBanner();
+renderSections();
+setInterval(renderBanner,30000); // troca a cada 30s
 </script>
+
 </body>
 </html>
