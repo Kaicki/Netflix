@@ -361,7 +361,7 @@ function openInfo(movie){
   infoPlay.onclick = ()=> openPlayer(movie.driveId);
   infoDetails.textContent = `Relevância: ${movie.relevance}% • Duração: ${movie.duration}`;
   infoModal.style.display = 'flex';
-  setTimeout(()=>infoCard.classList.add('show'), 10);
+  setTimeout(()=>infoCard.classList.add('show'), 8);
 }
 
 infoClose.onclick = ()=> closeInfo();
