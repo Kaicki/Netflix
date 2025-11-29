@@ -1014,80 +1014,51 @@ const heroPlay = document.getElementById('heroPlay');
 const heroInfo = document.getElementById('heroInfo');
 const heroThumb = document.getElementById('heroThumb');
 
-function drivePreview(id){ return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : ''; }
+function drivePreview(id){ return id ? https://drive.google.com/file/d/${encodeURIComponent(id)}/preview : ''; }
 function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
 const grouped = movies.reduce((acc,m)=>{ if(!acc[m.category]) acc[m.category]=[]; acc[m.category].push(m); return acc; },{});
 const order = ['Animação','Ação','Comédia','Aventura','Romance','Terror','Outros'];
 
-/* ----------------------------
-   LOCALSTORAGE "JÁ VI"
----------------------------- */
-let watched = JSON.parse(localStorage.getItem('watched')) || [];
-
-function toggleWatched(id){
-  if(watched.includes(id)){
-    watched = watched.filter(x => x !== id);
-  } else {
-    watched.push(id);
-  }
-  localStorage.setItem('watched', JSON.stringify(watched));
-  updateWatchedButtons();
-}
-
-function updateWatchedButtons(){
-  document.querySelectorAll('[data-watched-btn]').forEach(btn=>{
-    const id = btn.getAttribute('data-watched-btn');
-    if(watched.includes(id)){
-      btn.textContent = "✔ Visto";
-      btn.classList.add('watched');
-    } else {
-      btn.textContent = "Já vi";
-      btn.classList.remove('watched');
-    }
-  });
-}
-/* ---------------------------- */
-
 function renderSections(){
-  main.innerHTML = '';
-  for(const key of order){
-    const list = grouped[key];
-    if(!list || list.length===0) continue;
-    main.appendChild(createSection(key, list));
-  }
+main.innerHTML = '';
+for(const key of order){
+const list = grouped[key];
+if(!list || list.length===0) continue;
+main.appendChild(createSection(key, list));
+}
 }
 
 function createSection(title,list){
-  const section = document.createElement('section');
-  section.className='section';
-  const h = document.createElement('h2'); h.textContent = title;
-  section.appendChild(h);
-  const row = document.createElement('div'); row.className='row';
-  list.forEach(item=>{
-    const c = document.createElement('div'); c.className='card';
-    c.innerHTML = `<img src="${item.poster}" alt="${escapeHtml(item.title)}">`;
-    c.addEventListener('click', ()=> openInfo(item));
-    row.appendChild(c);
-  });
-  section.appendChild(row);
-  return section;
+const section = document.createElement('section');
+section.className='section';
+const h = document.createElement('h2'); h.textContent = title;
+section.appendChild(h);
+const row = document.createElement('div'); row.className='row';
+list.forEach(item=>{
+const c = document.createElement('div'); c.className='card';
+c.innerHTML = <img src="${item.poster}" alt="${escapeHtml(item.title)}">;
+c.addEventListener('click', ()=> openInfo(item));
+row.appendChild(c);
+});
+section.appendChild(row);
+return section;
 }
 
-function escapeHtml(str){ return (str+'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+function escapeHtml(str){ return (str+'').replace(/[&<>"']/g, function(m){ return {'&':'&','<':'<','>':'>','"':'"',"'":'''}[m]; }); }
 
 let currentHero = null;
 function renderHero(){
-  const chosen = pickRandom(movies);
-  currentHero = chosen;
-  hero.style.backgroundImage = chosen.backdrop ? `url('${chosen.backdrop}')` : `url('${chosen.poster}')`;
-  heroThumb.src = chosen.poster || '';
-  heroTitle.textContent = chosen.title || '';
-  heroDesc.textContent = chosen.description || '';
-  heroPlay.style.display = chosen.driveId ? 'inline-block' : 'none';
-  heroInfo.style.display = 'inline-block';
-  heroPlay.onclick = ()=> openPlayer(chosen.driveId);
-  heroInfo.onclick = ()=> openInfo(chosen);
+const chosen = pickRandom(movies);
+currentHero = chosen;
+hero.style.backgroundImage = chosen.backdrop ? url('${chosen.backdrop}') : url('${chosen.poster}');
+heroThumb.src = chosen.poster || '';
+heroTitle.textContent = chosen.title || '';
+heroDesc.textContent = chosen.description || '';
+heroPlay.style.display = chosen.driveId ? 'inline-block' : 'none';
+heroInfo.style.display = 'inline-block';
+heroPlay.onclick = ()=> openPlayer(chosen.driveId);
+heroInfo.onclick = ()=> openInfo(chosen);
 }
 
 const infoModal = document.getElementById('infoModal');
@@ -1102,63 +1073,44 @@ const infoMore = document.getElementById('infoMore');
 const infoClose = document.getElementById('infoClose');
 const infoDetails = document.getElementById('infoDetails');
 
-/* ----------------------------
-   MODAL DE INFORMAÇÕES
----------------------------- */
 function openInfo(movie){
-  infoPoster.style.backgroundImage = `url('${movie.poster}')`;
-  infoTitle.textContent = movie.title;
-  infoCategory.textContent = `${movie.category} • ${movie.year}`;
-  infoDesc.textContent = movie.description;
-  infoPlay.onclick = ()=> openPlayer(movie.driveId);
-  infoDetails.textContent = `Relevância: ${movie.relevance}% • Duração: ${movie.duration}`;
-
-  // Botão "Já vi"
-  infoMore.innerHTML = `
-    <button data-watched-btn="${movie.id}" class="watched-btn">Já vi</button>
-  `;
-
-  infoModal.style.display = 'flex';
-  setTimeout(()=>infoCard.classList.add('show'), 8);
-
-  // ativa clique e atualiza estado
-  setTimeout(()=>{
-    document.querySelector(`[data-watched-btn="${movie.id}"]`)
-      .onclick = () => toggleWatched(movie.id);
-    updateWatchedButtons();
-  }, 20);
+infoPoster.style.backgroundImage = url('${movie.poster}');
+infoTitle.textContent = movie.title;
+infoCategory.textContent = ${movie.category} • ${movie.year};
+infoDesc.textContent = movie.description;
+infoPlay.onclick = ()=> openPlayer(movie.driveId);
+infoDetails.textContent = Relevância: ${movie.relevance}% • Duração: ${movie.duration};
+infoModal.style.display = 'flex';
+setTimeout(()=>infoCard.classList.add('show'), 8);
 }
 
 infoClose.onclick = ()=> closeInfo();
 infoModal.onclick = e => { if(e.target === infoModal) closeInfo(); };
-
 function closeInfo(){
-  infoCard.classList.remove('show');
-  setTimeout(()=> infoModal.style.display='none', 220);
+infoCard.classList.remove('show');
+setTimeout(()=> infoModal.style.display='none', 220);
 }
-/* ---------------------------- */
 
 const playerModal = document.getElementById('playerModal');
 const playerFrame = document.getElementById('playerFrame');
 const closePlayer = document.getElementById('closePlayer');
 
 function openPlayer(driveId){
-  if(!driveId) return;
-  playerFrame.src = drivePreview(driveId);
-  playerModal.style.display = 'flex';
+if(!driveId) return;
+playerFrame.src = drivePreview(driveId);
+playerModal.style.display = 'flex';
 }
 
 closePlayer.onclick = ()=> closePlayerModal();
 playerModal.onclick = e => { if(e.target === playerModal) closePlayerModal(); };
 
 function closePlayerModal(){
-  playerFrame.src='';
-  playerModal.style.display='none';
+playerFrame.src='';
+playerModal.style.display='none';
 }
 
 renderSections();
 renderHero();
-updateWatchedButtons();
 </script>
 </body>
 </html>
