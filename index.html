@@ -1004,111 +1004,169 @@ const movies = [
     duration: "1h 41m"
   }
   ];
-const main = document.getElementById('mainContent');
-const hero = document.getElementById('hero');
-const heroTitle = document.getElementById('heroTitle');
-const heroDesc = document.getElementById('heroDesc');
-const heroPlay = document.getElementById('heroPlay');
-const heroInfo = document.getElementById('heroInfo');
-const heroThumb = document.getElementById('heroThumb');
+// =========================
+// MOVIES ARRAY (CORRIGIDO)
+// =========================
 
-function drivePreview(id){ return id ? https://drive.google.com/file/d/${encodeURIComponent(id)}/preview : ''; }
-function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+const movies = [
+  { title: "A ERA DO GELO",
+    description:"Sid e Manny enfrentam aventuras congelantes.",
+    poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10",
+    backdrop:"",
+    driveId:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM",
+    category:"Animação",
+    year:2002,
+    relevance:80,
+    duration:"1h 21m"
+  },
+  { title: "WALL-E",
+    description:"Um robô descobre o amor e a esperança.",
+    poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2sD2MrgnTDuGRtMq4IWj_4xzxmLZMQunaiF2Q83h7AcIeRcMW8coHbW0&s=10",
+    backdrop:"",
+    driveId:"1MiqOg2g2MbKRwexsa1xxF4Uxa6Y9-saJ",
+    category:"Animação",
+    year:2008,
+    relevance:95,
+    duration:"1h 38m"
+  },
+  { title: "LOGAN",
+    description:"O Wolverine enfrenta desafios finais e intensos.",
+    poster:"https://br.web.img3.acsta.net/c_310_420/pictures/16/10/05/19/59/363613.jpg",
+    backdrop:"",
+    driveId:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA",
+    category:"Ação",
+    year:2017,
+    relevance:85,
+    duration:"2h 17m"
+  }
+];
 
-const grouped = movies.reduce((acc,m)=>{ if(!acc[m.category]) acc[m.category]=[]; acc[m.category].push(m); return acc; },{});
-const order = ['Animação','Ação','Comédia','Aventura','Romance','Terror','Outros'];
+// =========================
+// ELEMENTOS
+// =========================
 
-function renderSections(){
-main.innerHTML = '';
-for(const key of order){
-const list = grouped[key];
-if(!list || list.length===0) continue;
-main.appendChild(createSection(key, list));
-}
-}
+const main = document.getElementById("mainContent");
+const hero = document.getElementById("hero");
+const heroThumb = document.getElementById("heroThumb");
+const heroTitle = document.getElementById("heroTitle");
+const heroDesc = document.getElementById("heroDesc");
+const heroPlay = document.getElementById("heroPlay");
+const heroInfo = document.getElementById("heroInfo");
 
-function createSection(title,list){
-const section = document.createElement('section');
-section.className='section';
-const h = document.createElement('h2'); h.textContent = title;
-section.appendChild(h);
-const row = document.createElement('div'); row.className='row';
-list.forEach(item=>{
-const c = document.createElement('div'); c.className='card';
-c.innerHTML = <img src="${item.poster}" alt="${escapeHtml(item.title)}">;
-c.addEventListener('click', ()=> openInfo(item));
-row.appendChild(c);
-});
-section.appendChild(row);
-return section;
-}
+const infoModal = document.getElementById("infoModal");
+const infoCard = document.getElementById("infoCard");
+const infoPoster = document.getElementById("infoPoster");
+const infoTitle = document.getElementById("infoTitle");
+const infoDesc = document.getElementById("infoDesc");
+const infoCategory = document.getElementById("infoCategory");
+const infoDetails = document.getElementById("infoDetails");
+const infoPlay = document.getElementById("infoPlay");
+const infoClose = document.getElementById("infoClose");
 
-function escapeHtml(str){ return (str+'').replace(/[&<>"']/g, function(m){ return {'&':'&','<':'<','>':'>','"':'"',"'":'''}[m]; }); }
+const playerModal = document.getElementById("playerModal");
+const playerFrame = document.getElementById("playerFrame");
+const closePlayer = document.getElementById("closePlayer");
 
-let currentHero = null;
-function renderHero(){
-const chosen = pickRandom(movies);
-currentHero = chosen;
-hero.style.backgroundImage = chosen.backdrop ? url('${chosen.backdrop}') : url('${chosen.poster}');
-heroThumb.src = chosen.poster || '';
-heroTitle.textContent = chosen.title || '';
-heroDesc.textContent = chosen.description || '';
-heroPlay.style.display = chosen.driveId ? 'inline-block' : 'none';
-heroInfo.style.display = 'inline-block';
-heroPlay.onclick = ()=> openPlayer(chosen.driveId);
-heroInfo.onclick = ()=> openInfo(chosen);
-}
+// =========================
+// LOCALSTORAGE
+// =========================
 
-const infoModal = document.getElementById('infoModal');
-const infoCard = document.getElementById('infoCard');
-const infoPoster = document.getElementById('infoPoster');
-const infoTitle = document.getElementById('infoTitle');
-const infoCategory = document.getElementById('infoCategory');
-const infoDesc = document.getElementById('infoDesc');
-const infoPlay = document.getElementById('infoPlay');
-const infoList = document.getElementById('infoList');
-const infoMore = document.getElementById('infoMore');
-const infoClose = document.getElementById('infoClose');
-const infoDetails = document.getElementById('infoDetails');
-
-function openInfo(movie){
-infoPoster.style.backgroundImage = url('${movie.poster}');
-infoTitle.textContent = movie.title;
-infoCategory.textContent = ${movie.category} • ${movie.year};
-infoDesc.textContent = movie.description;
-infoPlay.onclick = ()=> openPlayer(movie.driveId);
-infoDetails.textContent = Relevância: ${movie.relevance}% • Duração: ${movie.duration};
-infoModal.style.display = 'flex';
-setTimeout(()=>infoCard.classList.add('show'), 8);
+function saveLastMovie(movie) {
+  localStorage.setItem("lastMovie", JSON.stringify(movie));
 }
 
-infoClose.onclick = ()=> closeInfo();
-infoModal.onclick = e => { if(e.target === infoModal) closeInfo(); };
-function closeInfo(){
-infoCard.classList.remove('show');
-setTimeout(()=> infoModal.style.display='none', 220);
+function loadLastMovie() {
+  const saved = localStorage.getItem("lastMovie");
+  return saved ? JSON.parse(saved) : null;
 }
 
-const playerModal = document.getElementById('playerModal');
-const playerFrame = document.getElementById('playerFrame');
-const closePlayer = document.getElementById('closePlayer');
+// =========================
+// HERO ALEATÓRIO
+// =========================
 
-function openPlayer(driveId){
-if(!driveId) return;
-playerFrame.src = drivePreview(driveId);
-playerModal.style.display = 'flex';
+function loadHero(movie) {
+  hero.style.backgroundImage = `url(${movie.backdrop || movie.poster})`;
+  heroThumb.src = movie.poster;
+  heroTitle.textContent = movie.title;
+  heroDesc.textContent = movie.description;
+
+  heroPlay.style.display = "inline-block";
+  heroInfo.style.display = "inline-block";
+
+  heroPlay.onclick = () => openPlayer(movie.driveId);
+  heroInfo.onclick = () => openInfo(movie);
 }
 
-closePlayer.onclick = ()=> closePlayerModal();
-playerModal.onclick = e => { if(e.target === playerModal) closePlayerModal(); };
+// =========================
+// GERAR LISTAS
+// =========================
 
-function closePlayerModal(){
-playerFrame.src='';
-playerModal.style.display='none';
+function createSections() {
+  main.innerHTML = "";
+
+  const section = document.createElement("div");
+  section.className = "section";
+  section.innerHTML = `<h2>Filmes</h2>`;
+
+  const row = document.createElement("div");
+  row.className = "row";
+
+  movies.forEach((movie) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<img src="${movie.poster}">`;
+
+    card.onclick = () => openInfo(movie);
+    row.appendChild(card);
+  });
+
+  section.appendChild(row);
+  main.appendChild(section);
 }
 
-renderSections();
-renderHero();
+// =========================
+// MODAL DE INFORMAÇÕES
+// =========================
+
+function openInfo(movie) {
+  infoPoster.style.backgroundImage = `url(${movie.poster})`;
+  infoTitle.textContent = movie.title;
+  infoDesc.textContent = movie.description;
+  infoCategory.textContent = `${movie.category} • ${movie.year}`;
+  infoDetails.textContent = `${movie.relevance}% Relevância • ${movie.duration}`;
+
+  infoPlay.onclick = () => openPlayer(movie.driveId);
+
+  infoModal.style.display = "flex";
+  setTimeout(() => infoCard.classList.add("show"), 10);
+}
+
+infoClose.onclick = () => {
+  infoCard.classList.remove("show");
+  setTimeout(() => infoModal.style.display = "none", 200);
+};
+
+// =========================
+// PLAYER
+// =========================
+
+function openPlayer(id) {
+  playerFrame.src = `https://drive.google.com/file/d/${id}/preview`;
+  playerModal.style.display = "flex";
+}
+
+closePlayer.onclick = () => {
+  playerFrame.src = "";
+  playerModal.style.display = "none";
+};
+// =========================
+// START
+// =========================
+const last = loadLastMovie();
+const heroMovie = last || movies[Math.floor(Math.random() * movies.length)];
+loadHero(heroMovie);
+saveLastMovie(heroMovie);
+createSections();
 </script>
 </body>
 </html>
