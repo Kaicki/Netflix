@@ -1147,11 +1147,9 @@ closePlayer.onclick = () => {
 // =========================
 // START
 // =========================
-const last = loadLastMovie();
-const heroMovie = last || movies[Math.floor(Math.random() * movies.length)];
-
+// Banner sempre aleatório SEM TRAVAR
+const heroMovie = movies[Math.floor(Math.random() * movies.length)];
 loadHero(heroMovie);
-saveLastMovie(heroMovie);
 
 createCategorySections();
 </script>
