@@ -245,47 +245,41 @@
 </div>
 
 <script>
-// =========================
-// MOVIES ARRAY (CORRIGIDO)
+  // =========================
+// MOVIES ARRAY (SEU ARRAY AQUI)
 // =========================
 
+// (use o seu array completo aqui)
+// Exemplo reduzido só para demonstrar:
 const movies = [
-  { title: "A ERA DO GELO",
-    description:"Sid e Manny enfrentam aventuras congelantes.",
-    poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10",
-    backdrop:"",
-    driveId:"1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM",
-    category:"Animação",
-    year:2002,
-    relevance:80,
-    duration:"1h 21m"
+  {
+    title: "A ERA DO GELO",
+    description: "Sid e Manny enfrentam aventuras congelantes.",
+    poster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI81OGQpkjPFAh3ZuzOp4H7YPFTDy7JGDEC6rJDuy1Zw&s=10",
+    backdrop: "",
+    driveId: "1A2tHf77Gq0m9upcZhz_0C9LW0XaY5ZDM",
+    category: "Animação",
+    year: 2002,
+    relevance: 80,
+    duration: "1h 21m"
   },
-  { title: "WALL-E",
-    description:"Um robô descobre o amor e a esperança.",
-    poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2sD2MrgnTDuGRtMq4IWj_4xzxmLZMQunaiF2Q83h7AcIeRcMW8coHbW0&s=10",
-    backdrop:"",
-    driveId:"1MiqOg2g2MbKRwexsa1xxF4Uxa6Y9-saJ",
-    category:"Animação",
-    year:2008,
-    relevance:95,
-    duration:"1h 38m"
-  },
-  { title: "LOGAN",
-    description:"O Wolverine enfrenta desafios finais e intensos.",
-    poster:"https://br.web.img3.acsta.net/c_310_420/pictures/16/10/05/19/59/363613.jpg",
-    backdrop:"",
-    driveId:"1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA",
-    category:"Ação",
-    year:2017,
-    relevance:85,
-    duration:"2h 17m"
+  {
+    title: "LOGAN",
+    description: "O Wolverine enfrenta desafios finais.",
+    poster: "https://br.web.img3.acsta.net/c_310_420/pictures/16/10/05/19/59/363613.jpg",
+    backdrop: "",
+    driveId: "1ckKDAStKHoNhaSMDmuzAa0iMY4I69QyA",
+    category: "Ação",
+    year: 2017,
+    relevance: 85,
+    duration: "2h 17m"
   }
 ];
+
 
 // =========================
 // ELEMENTOS
 // =========================
-
 const main = document.getElementById("mainContent");
 const hero = document.getElementById("hero");
 const heroThumb = document.getElementById("heroThumb");
@@ -294,6 +288,7 @@ const heroDesc = document.getElementById("heroDesc");
 const heroPlay = document.getElementById("heroPlay");
 const heroInfo = document.getElementById("heroInfo");
 
+// MODAL INFO
 const infoModal = document.getElementById("infoModal");
 const infoCard = document.getElementById("infoCard");
 const infoPoster = document.getElementById("infoPoster");
@@ -304,14 +299,15 @@ const infoDetails = document.getElementById("infoDetails");
 const infoPlay = document.getElementById("infoPlay");
 const infoClose = document.getElementById("infoClose");
 
+// PLAYER
 const playerModal = document.getElementById("playerModal");
 const playerFrame = document.getElementById("playerFrame");
 const closePlayer = document.getElementById("closePlayer");
 
-// =========================
-// LOCALSTORAGE
-// =========================
 
+// =========================
+// LOCAL STORAGE
+// =========================
 function saveLastMovie(movie) {
   localStorage.setItem("lastMovie", JSON.stringify(movie));
 }
@@ -321,54 +317,65 @@ function loadLastMovie() {
   return saved ? JSON.parse(saved) : null;
 }
 
+
 // =========================
 // HERO ALEATÓRIO
 // =========================
-
 function loadHero(movie) {
   hero.style.backgroundImage = `url(${movie.backdrop || movie.poster})`;
   heroThumb.src = movie.poster;
   heroTitle.textContent = movie.title;
   heroDesc.textContent = movie.description;
 
-  heroPlay.style.display = "inline-block";
-  heroInfo.style.display = "inline-block";
-
   heroPlay.onclick = () => openPlayer(movie.driveId);
   heroInfo.onclick = () => openInfo(movie);
 }
 
-// =========================
-// GERAR LISTAS
-// =========================
 
-function createSections() {
+// =========================
+// CRIAR SEÇÕES POR CATEGORIA (NETFLIX)
+// =========================
+function createCategorySections() {
   main.innerHTML = "";
 
-  const section = document.createElement("div");
-  section.className = "section";
-  section.innerHTML = `<h2>Filmes</h2>`;
+  // Agrupa filmes por categoria
+  const categories = {};
 
-  const row = document.createElement("div");
-  row.className = "row";
-
-  movies.forEach((movie) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `<img src="${movie.poster}">`;
-
-    card.onclick = () => openInfo(movie);
-    row.appendChild(card);
+  movies.forEach(movie => {
+    if (!categories[movie.category]) {
+      categories[movie.category] = [];
+    }
+    categories[movie.category].push(movie);
   });
 
-  section.appendChild(row);
-  main.appendChild(section);
+  // Cria uma seção para cada categoria
+  Object.keys(categories).forEach(cat => {
+    const section = document.createElement("div");
+    section.className = "section";
+    section.innerHTML = `<h2>${cat}</h2>`;
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    categories[cat].forEach(movie => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<img src="${movie.poster}">`;
+
+      card.onclick = () => openInfo(movie);
+
+      row.appendChild(card);
+    });
+
+    section.appendChild(row);
+    main.appendChild(section);
+  });
 }
+
 
 // =========================
 // MODAL DE INFORMAÇÕES
 // =========================
-
 function openInfo(movie) {
   infoPoster.style.backgroundImage = `url(${movie.poster})`;
   infoTitle.textContent = movie.title;
@@ -387,10 +394,10 @@ infoClose.onclick = () => {
   setTimeout(() => infoModal.style.display = "none", 200);
 };
 
+
 // =========================
 // PLAYER
 // =========================
-
 function openPlayer(id) {
   playerFrame.src = `https://drive.google.com/file/d/${id}/preview`;
   playerModal.style.display = "flex";
@@ -401,16 +408,17 @@ closePlayer.onclick = () => {
   playerModal.style.display = "none";
 };
 
+
 // =========================
 // START
 // =========================
-
 const last = loadLastMovie();
 const heroMovie = last || movies[Math.floor(Math.random() * movies.length)];
+
 loadHero(heroMovie);
 saveLastMovie(heroMovie);
 
-createSections();  
+createCategorySections();
 </script>
 </body>
 </html>
