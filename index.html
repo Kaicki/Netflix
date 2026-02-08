@@ -1172,5 +1172,56 @@ loadHero(heroMovie);
 
 createCategorySections();
 </script>
+  <script>
+let lastHeroIndex = -1;
+
+// pega filmes válidos pro banner
+const heroMovies = movies.filter(m => m.poster);
+
+// atualiza o banner
+function updateHero(movie) {
+  const hero = document.getElementById("hero");
+
+  hero.style.backgroundImage = `
+    linear-gradient(to right, rgba(4,4,4,0.95), rgba(4,4,4,0.3)),
+    url(${movie.backdrop || movie.poster})
+  `;
+
+  document.getElementById("heroThumb").src = movie.poster;
+  document.getElementById("heroTitle").textContent = movie.title;
+  document.getElementById("heroDesc").textContent = movie.description;
+
+  const playBtn = document.getElementById("heroPlay");
+  const infoBtn = document.getElementById("heroInfo");
+
+  playBtn.style.display = "inline-block";
+  infoBtn.style.display = "inline-block";
+
+  playBtn.onclick = () => openPlayer(movie);
+  infoBtn.onclick = () => openInfo(movie);
+}
+
+// sorteia um filme diferente do anterior
+function getRandomHero() {
+  let index;
+  do {
+    index = Math.floor(Math.random() * heroMovies.length);
+  } while (index === lastHeroIndex && heroMovies.length > 1);
+
+  lastHeroIndex = index;
+  return heroMovies[index];
+}
+
+// inicia o sistema aleatório
+function startRandomHero() {
+  updateHero(getRandomHero());
+
+  setInterval(() => {
+    updateHero(getRandomHero());
+  }, 8000); // troca a cada 8 segundos
+}
+
+window.addEventListener("load", startRandomHero);
+</script>
 </body>
 </html>
