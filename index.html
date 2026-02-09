@@ -8,11 +8,9 @@
 
 <body>
 
-<!-- INTRO TIAFLIX -->
 <div id="intro">
   <h1>TIAFLIX</h1>
   <span class="credit">By Bertaglia</span>
-  <span class="touch">Toque para entrar</span>
 </div>
 
 <audio id="introSound" preload="auto">
@@ -30,7 +28,6 @@ body{
   inset:0;
   background:#000;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
   z-index:99999;
@@ -46,7 +43,6 @@ body{
   animation: zoomGlow 3s ease forwards;
 }
 
-/* TEXTO DE BAIXO */
 .credit{
   position:absolute;
   bottom:25px;
@@ -56,14 +52,6 @@ body{
   opacity:0;
   animation: fadeIn 1s ease forwards;
   animation-delay: 2s;
-}
-
-/* TOQUE PARA ENTRAR */
-.touch{
-  margin-top:20px;
-  font-size:14px;
-  color:#aaa;
-  animation: blink 1.2s infinite;
 }
 
 @keyframes zoomGlow{
@@ -92,29 +80,19 @@ body{
     visibility:hidden;
   }
 }
-
-@keyframes blink{
-  50%{ opacity:0.3; }
-}
 </style>
 
 <script>
 const sound = document.getElementById("introSound");
 sound.volume = 0.6;
 
-// toca o som no primeiro toque
-document.addEventListener("click", () => {
-  sound.play();
-  document.querySelector(".touch").style.display = "none";
-}, { once:true });
+sound.play().catch(()=>{});
 
-// após 4 segundos abre o site
 setTimeout(()=>{
   document.getElementById("intro").remove();
   window.location.href = "tiaflix.html";
-},4000);
+},6000);
 </script>
-<!-- FIM INTRO -->
 
 </body>
 </html>
