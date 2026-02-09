@@ -1,0 +1,82 @@
+<!-- INTRO TIAFLIX -->
+<div id="intro">
+  <h1>TIAFLIX</h1>
+  <span class="credit">By Bertaglia</span>
+</div>
+
+<audio id="introSound" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-cinematic-hit-1664.mp3" type="audio/mpeg">
+</audio>
+
+<style>
+#intro{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 3s;
+}
+
+#intro h1{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(40px, 10vw, 100px);
+  color:#e50914;
+  letter-spacing:6px;
+  animation: zoomGlow 3s ease forwards;
+}
+
+/* TEXTO LÁ EMBAIXO */
+.credit{
+  position:absolute;
+  bottom:25px;
+  font-size:13px;
+  letter-spacing:3px;
+  color:#fff;
+  opacity:0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 2s;
+}
+
+@keyframes zoomGlow{
+  0%{
+    opacity:0;
+    transform:scale(0.6);
+    text-shadow:none;
+  }
+  60%{
+    opacity:1;
+    transform:scale(1);
+    text-shadow:0 0 30px #e50914;
+  }
+  100%{
+    text-shadow:0 0 60px #e50914;
+  }
+}
+
+@keyframes fadeIn{
+  to{ opacity:0.8; }
+}
+
+@keyframes fadeOut{
+  to{
+    opacity:0;
+    visibility:hidden;
+  }
+}
+</style>
+
+<script>
+const sound = document.getElementById("introSound");
+sound.volume = 0.6;
+sound.play().catch(()=>{});
+
+setTimeout(()=>{
+  document.getElementById("intro").remove();
+  window.location.href = "tiaflix.html";
+},4000);
+</script>
+<!-- FIM INTRO -->
