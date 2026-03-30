@@ -1123,38 +1123,45 @@ const movies = [
 },
 ]
 
-  // =========================
-// SISTEMA DE SÉRIES (SEM QUEBRAR NADA)
+// =========================
+// EXEMPLO COMPLETO DE SÉRIE
 // =========================
 
-// exemplo de série (edite depois)
 movies.push({
-  title: "Breaking Bad",
-  description: "Um professor vira produtor de droga.",
-  poster: "https://upload.wikimedia.org/wikipedia/en/6/61/Breaking_Bad_title_card.png",
+  title: "Minha Série",
+  description: "Uma série exemplo para testar temporadas e episódios.",
+  poster: "https://via.placeholder.com/300x450",
   backdrop: "",
   category: "Séries",
-  year: 2008,
-  relevance: 98,
-  duration: "5 Temporadas",
+  year: 2024,
+  relevance: 100,
+  duration: "3 Temporadas",
   type: "series",
   seasons: [
     {
       season: 1,
       episodes: [
-        { title: "Episódio 1", driveId: "SEU_ID_AQUI" },
-        { title: "Episódio 2", driveId: "SEU_ID_AQUI" },
-        { title: "Episódio 3", driveId: "SEU_ID_AQUI" },
-        { title: "Episódio 4", driveId: "SEU_ID_AQUI" },
-        { title: "Episódio 5", driveId: "SEU_ID_AQUI" },
-        { title: "Episódio 6", driveId: "SEU_ID_AQUI" },
+        { title: "Começo", driveId: "ID1" },
+        { title: "O Problema", driveId: "ID2" },
+        { title: "A Decisão", driveId: "ID3" },
+        { title: "Consequências", driveId: "ID4" }
       ]
     },
     {
       season: 2,
       episodes: [
-        { title: "Episódio 1", driveId: "SEU_ID_AQUI" },
-        { title: "Episódio 2", driveId: "SEU_ID_AQUI" }
+        { title: "Novo Início", driveId: "ID5" },
+        { title: "Conflito", driveId: "ID6" },
+        { title: "Traição", driveId: "ID7" },
+        { title: "Final Explosivo", driveId: "ID8" }
+      ]
+    },
+    {
+      season: 3,
+      episodes: [
+        { title: "Retorno", driveId: "ID9" },
+        { title: "A Verdade", driveId: "ID10" },
+        { title: "O Fim", driveId: "ID11" }
       ]
     }
   ]
@@ -1162,7 +1169,7 @@ movies.push({
 
 
 // =========================
-// FUNÇÃO DE TEMPORADAS BONITA
+// UI DE TEMPORADAS + EPISÓDIOS
 // =========================
 
 function renderEpisodes(series) {
@@ -1174,7 +1181,6 @@ function renderEpisodes(series) {
   container.style.gap = "12px";
 
   series.seasons.forEach((season, sIndex) => {
-    // HEADER DA TEMPORADA
     const header = document.createElement("div");
     header.style.display = "flex";
     header.style.justifyContent = "space-between";
@@ -1185,20 +1191,15 @@ function renderEpisodes(series) {
     const title = document.createElement("div");
     title.textContent = "Temporada " + season.season;
     title.style.fontWeight = "600";
-    title.style.fontSize = "15px";
 
     const arrow = document.createElement("div");
-    arrow.textContent = "▼";
-    arrow.style.fontSize = "12px";
-    arrow.style.opacity = "0.7";
+    arrow.textContent = sIndex === 0 ? "▼" : "▶";
 
     header.appendChild(title);
     header.appendChild(arrow);
 
-    // LISTA DE EPISÓDIOS
     const epList = document.createElement("div");
     epList.style.display = sIndex === 0 ? "grid" : "none";
-    epList.style.gridTemplateColumns = "1fr";
     epList.style.gap = "6px";
 
     season.episodes.forEach((ep, index) => {
@@ -1206,48 +1207,33 @@ function renderEpisodes(series) {
 
       item.style.display = "flex";
       item.style.alignItems = "center";
-      item.style.gap = "10px";
+      item.style.justifyContent = "space-between";
       item.style.padding = "10px";
       item.style.borderRadius = "6px";
-      item.style.background = "rgba(255,255,255,0.03)";
+      item.style.background = "rgba(255,255,255,0.04)";
       item.style.cursor = "pointer";
-      item.style.transition = "0.2s";
 
-      item.onmouseover = () => {
-        item.style.background = "rgba(255,255,255,0.08)";
-      };
-
-      item.onmouseout = () => {
-        item.style.background = "rgba(255,255,255,0.03)";
-      };
-
-      const num = document.createElement("div");
-      num.textContent = index + 1;
-      num.style.opacity = "0.6";
-      num.style.width = "20px";
+      item.onmouseover = () => item.style.background = "rgba(255,255,255,0.1)";
+      item.onmouseout = () => item.style.background = "rgba(255,255,255,0.04)";
 
       const name = document.createElement("div");
-      name.textContent = ep.title;
-      name.style.flex = "1";
+      name.textContent = (index + 1) + ". " + ep.title;
 
       const play = document.createElement("div");
       play.textContent = "▶";
-      play.style.opacity = "0.7";
 
       item.onclick = () => openPlayer(ep.driveId);
 
-      item.appendChild(num);
       item.appendChild(name);
       item.appendChild(play);
 
       epList.appendChild(item);
     });
 
-    // TOGGLE (abrir/fechar temporada)
     header.onclick = () => {
-      const isOpen = epList.style.display === "grid";
-      epList.style.display = isOpen ? "none" : "grid";
-      arrow.textContent = isOpen ? "▶" : "▼";
+      const open = epList.style.display === "grid";
+      epList.style.display = open ? "none" : "grid";
+      arrow.textContent = open ? "▶" : "▼";
     };
 
     container.appendChild(header);
@@ -1256,6 +1242,25 @@ function renderEpisodes(series) {
 
   infoDetails.appendChild(container);
 }
+
+
+// =========================
+// PATCH (SEM QUEBRAR NADA)
+// =========================
+
+const originalOpenInfo = openInfo;
+
+openInfo = function(movie) {
+  originalOpenInfo(movie);
+
+  if (movie.type === "series") {
+    renderEpisodes(movie);
+
+    infoPlay.onclick = () => {
+      renderEpisodes(movie);
+    };
+  }
+};
   
 const main = document.getElementById("mainContent");
 const hero = document.getElementById("hero");
