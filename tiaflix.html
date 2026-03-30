@@ -1123,6 +1123,11 @@ const movies = [
 },
 ]
 
+  // =========================
+// SISTEMA DE SÉRIES (SEM QUEBRAR NADA)
+// =========================
+
+// exemplo de série (edite depois)
 movies.push({
   title: "Breaking Bad",
   description: "Um professor vira produtor de droga.",
@@ -1139,9 +1144,11 @@ movies.push({
       episodes: [
         { title: "Episódio 1", driveId: "SEU_ID_AQUI" },
         { title: "Episódio 2", driveId: "SEU_ID_AQUI" }
-      ],
-    
-    season: 2, [
+      ]
+    },
+    {
+      season: 2,
+      episodes: [
         { title: "Episódio 1", driveId: "SEU_ID_AQUI" },
         { title: "Episódio 2", driveId: "SEU_ID_AQUI" }
       ]
@@ -1149,49 +1156,67 @@ movies.push({
   ]
 });
 
+
+// =========================
+// FUNÇÃO DE TEMPORADAS BONITA
+// =========================
+
 function renderEpisodes(series) {
   infoDetails.innerHTML = "";
 
-  const box = document.createElement("div");
-  box.style.display = "flex";
-  box.style.flexDirection = "column";
-  box.style.gap = "6px";
+  const container = document.createElement("div");
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  container.style.gap = "10px";
 
   series.seasons.forEach(season => {
+    const seasonBox = document.createElement("div");
+    seasonBox.style.padding = "10px";
+    seasonBox.style.border = "1px solid rgba(255,255,255,0.08)";
+    seasonBox.style.borderRadius = "8px";
+
     const title = document.createElement("div");
     title.textContent = "Temporada " + season.season;
     title.style.fontWeight = "bold";
-    title.style.marginTop = "10px";
+    title.style.marginBottom = "8px";
 
-    box.appendChild(title);
+    seasonBox.appendChild(title);
 
-    season.episodes.forEach(ep => {
+    season.episodes.forEach((ep, index) => {
       const btn = document.createElement("button");
-      btn.textContent = ep.title;
+      btn.textContent = (index + 1) + ". " + ep.title;
       btn.className = "action-list";
+      btn.style.textAlign = "left";
 
       btn.onclick = () => openPlayer(ep.driveId);
 
-      box.appendChild(btn);
+      seasonBox.appendChild(btn);
     });
+
+    container.appendChild(seasonBox);
   });
 
-  infoDetails.appendChild(box);
+  infoDetails.appendChild(container);
 }
 
 
+// =========================
+// PATCH SEGURO (NÃO QUEBRA NADA)
+// =========================
 
 const originalOpenInfo = openInfo;
+
 openInfo = function(movie) {
   originalOpenInfo(movie);
+
   if (movie.type === "series") {
     renderEpisodes(movie);
+
     infoPlay.onclick = () => {
       renderEpisodes(movie);
     };
   }
 };
-
   
 const main = document.getElementById("mainContent");
 const hero = document.getElementById("hero");
