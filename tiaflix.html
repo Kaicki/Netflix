@@ -1123,13 +1123,13 @@ const movies = [
 },
 ]
 
-// =========================
-// EXEMPLO COMPLETO DE SÉRIE
+ // =========================
+// EXEMPLO DE SÉRIE
 // =========================
 
 movies.push({
   title: "Minha Série",
-  description: "Uma série exemplo para testar temporadas e episódios.",
+  description: "Teste de temporadas.",
   poster: "https://via.placeholder.com/300x450",
   backdrop: "",
   category: "Séries",
@@ -1141,27 +1141,25 @@ movies.push({
     {
       season: 1,
       episodes: [
-        { title: "Começo", driveId: "ID1" },
-        { title: "O Problema", driveId: "ID2" },
-        { title: "A Decisão", driveId: "ID3" },
-        { title: "Consequências", driveId: "ID4" }
+        { driveId: "ID1" },
+        { driveId: "ID2" },
+        { driveId: "ID3" },
+        { driveId: "ID4" }
       ]
     },
     {
       season: 2,
       episodes: [
-        { title: "Novo Início", driveId: "ID5" },
-        { title: "Conflito", driveId: "ID6" },
-        { title: "Traição", driveId: "ID7" },
-        { title: "Final Explosivo", driveId: "ID8" }
+        { driveId: "ID5" },
+        { driveId: "ID6" },
+        { driveId: "ID7" }
       ]
     },
     {
       season: 3,
       episodes: [
-        { title: "Retorno", driveId: "ID9" },
-        { title: "A Verdade", driveId: "ID10" },
-        { title: "O Fim", driveId: "ID11" }
+        { driveId: "ID8" },
+        { driveId: "ID9" }
       ]
     }
   ]
@@ -1169,78 +1167,85 @@ movies.push({
 
 
 // =========================
-// UI DE TEMPORADAS + EPISÓDIOS
+// UI NOVA (SELETOR + GRID)
 // =========================
 
 function renderEpisodes(series) {
   infoDetails.innerHTML = "";
+
+  let currentSeason = series.seasons[0];
 
   const container = document.createElement("div");
   container.style.display = "flex";
   container.style.flexDirection = "column";
   container.style.gap = "12px";
 
-  series.seasons.forEach((season, sIndex) => {
-    const header = document.createElement("div");
-    header.style.display = "flex";
-    header.style.justifyContent = "space-between";
-    header.style.alignItems = "center";
-    header.style.cursor = "pointer";
-    header.style.padding = "8px 0";
+  // 🔽 BOTÕES DE TEMPORADA
+  const seasonSelector = document.createElement("div");
+  seasonSelector.style.display = "flex";
+  seasonSelector.style.gap = "6px";
+  seasonSelector.style.flexWrap = "wrap";
 
-    const title = document.createElement("div");
-    title.textContent = "Temporada " + season.season;
-    title.style.fontWeight = "600";
+  // 📺 GRID DE EPISÓDIOS
+  const epGrid = document.createElement("div");
+  epGrid.style.display = "grid";
+  epGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
+  epGrid.style.gap = "8px";
 
-    const arrow = document.createElement("div");
-    arrow.textContent = sIndex === 0 ? "▼" : "▶";
-
-    header.appendChild(title);
-    header.appendChild(arrow);
-
-    const epList = document.createElement("div");
-    epList.style.display = sIndex === 0 ? "grid" : "none";
-    epList.style.gap = "6px";
+  function renderSeason(season) {
+    epGrid.innerHTML = "";
 
     season.episodes.forEach((ep, index) => {
-      const item = document.createElement("div");
+      const btn = document.createElement("div");
 
-      item.style.display = "flex";
-      item.style.alignItems = "center";
-      item.style.justifyContent = "space-between";
-      item.style.padding = "10px";
-      item.style.borderRadius = "6px";
-      item.style.background = "rgba(255,255,255,0.04)";
-      item.style.cursor = "pointer";
+      btn.textContent = index + 1;
+      btn.style.height = "40px";
+      btn.style.display = "flex";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "center";
+      btn.style.borderRadius = "6px";
+      btn.style.background = "rgba(255,255,255,0.05)";
+      btn.style.cursor = "pointer";
+      btn.style.fontWeight = "bold";
 
-      item.onmouseover = () => item.style.background = "rgba(255,255,255,0.1)";
-      item.onmouseout = () => item.style.background = "rgba(255,255,255,0.04)";
+      btn.onmouseover = () => btn.style.background = "rgba(255,255,255,0.15)";
+      btn.onmouseout = () => btn.style.background = "rgba(255,255,255,0.05)";
 
-      const name = document.createElement("div");
-      name.textContent = (index + 1) + ". " + ep.title;
+      btn.onclick = () => openPlayer(ep.driveId);
 
-      const play = document.createElement("div");
-      play.textContent = "▶";
-
-      item.onclick = () => openPlayer(ep.driveId);
-
-      item.appendChild(name);
-      item.appendChild(play);
-
-      epList.appendChild(item);
+      epGrid.appendChild(btn);
     });
+  }
 
-    header.onclick = () => {
-      const open = epList.style.display === "grid";
-      epList.style.display = open ? "none" : "grid";
-      arrow.textContent = open ? "▶" : "▼";
+  // criar botões de temporada
+  series.seasons.forEach((season, index) => {
+    const btn = document.createElement("button");
+
+    btn.textContent = "T" + season.season;
+    btn.className = "action-list";
+
+    if (index === 0) btn.style.background = "#00a8ff";
+
+    btn.onclick = () => {
+      currentSeason = season;
+
+      // reset visual
+      [...seasonSelector.children].forEach(b => b.style.background = "");
+      btn.style.background = "#00a8ff";
+
+      renderSeason(season);
     };
 
-    container.appendChild(header);
-    container.appendChild(epList);
+    seasonSelector.appendChild(btn);
   });
 
+  container.appendChild(seasonSelector);
+  container.appendChild(epGrid);
+
   infoDetails.appendChild(container);
+
+  // render inicial
+  renderSeason(currentSeason);
 }
 
 
