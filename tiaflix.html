@@ -1171,56 +1171,91 @@ function renderEpisodes(series) {
   const container = document.createElement("div");
   container.style.display = "flex";
   container.style.flexDirection = "column";
-  container.style.gap = "10px";
+  container.style.gap = "12px";
 
-  series.seasons.forEach(season => {
-    const seasonBox = document.createElement("div");
-    seasonBox.style.padding = "10px";
-    seasonBox.style.border = "1px solid rgba(255,255,255,0.08)";
-    seasonBox.style.borderRadius = "8px";
+  series.seasons.forEach((season, sIndex) => {
+    // HEADER DA TEMPORADA
+    const header = document.createElement("div");
+    header.style.display = "flex";
+    header.style.justifyContent = "space-between";
+    header.style.alignItems = "center";
+    header.style.cursor = "pointer";
+    header.style.padding = "8px 0";
 
     const title = document.createElement("div");
     title.textContent = "Temporada " + season.season;
-    title.style.fontWeight = "bold";
-    title.style.marginBottom = "8px";
+    title.style.fontWeight = "600";
+    title.style.fontSize = "15px";
 
-    seasonBox.appendChild(title);
+    const arrow = document.createElement("div");
+    arrow.textContent = "▼";
+    arrow.style.fontSize = "12px";
+    arrow.style.opacity = "0.7";
+
+    header.appendChild(title);
+    header.appendChild(arrow);
+
+    // LISTA DE EPISÓDIOS
+    const epList = document.createElement("div");
+    epList.style.display = sIndex === 0 ? "grid" : "none";
+    epList.style.gridTemplateColumns = "1fr";
+    epList.style.gap = "6px";
 
     season.episodes.forEach((ep, index) => {
-      const btn = document.createElement("button");
-      btn.textContent = (index + 1) + ". " + ep.title;
-      btn.className = "action-list";
-      btn.style.textAlign = "left";
+      const item = document.createElement("div");
 
-      btn.onclick = () => openPlayer(ep.driveId);
+      item.style.display = "flex";
+      item.style.alignItems = "center";
+      item.style.gap = "10px";
+      item.style.padding = "10px";
+      item.style.borderRadius = "6px";
+      item.style.background = "rgba(255,255,255,0.03)";
+      item.style.cursor = "pointer";
+      item.style.transition = "0.2s";
 
-      seasonBox.appendChild(btn);
+      item.onmouseover = () => {
+        item.style.background = "rgba(255,255,255,0.08)";
+      };
+
+      item.onmouseout = () => {
+        item.style.background = "rgba(255,255,255,0.03)";
+      };
+
+      const num = document.createElement("div");
+      num.textContent = index + 1;
+      num.style.opacity = "0.6";
+      num.style.width = "20px";
+
+      const name = document.createElement("div");
+      name.textContent = ep.title;
+      name.style.flex = "1";
+
+      const play = document.createElement("div");
+      play.textContent = "▶";
+      play.style.opacity = "0.7";
+
+      item.onclick = () => openPlayer(ep.driveId);
+
+      item.appendChild(num);
+      item.appendChild(name);
+      item.appendChild(play);
+
+      epList.appendChild(item);
     });
 
-    container.appendChild(seasonBox);
+    // TOGGLE (abrir/fechar temporada)
+    header.onclick = () => {
+      const isOpen = epList.style.display === "grid";
+      epList.style.display = isOpen ? "none" : "grid";
+      arrow.textContent = isOpen ? "▶" : "▼";
+    };
+
+    container.appendChild(header);
+    container.appendChild(epList);
   });
 
   infoDetails.appendChild(container);
 }
-
-
-// =========================
-// PATCH SEGURO (NÃO QUEBRA NADA)
-// =========================
-
-const originalOpenInfo = openInfo;
-
-openInfo = function(movie) {
-  originalOpenInfo(movie);
-
-  if (movie.type === "series") {
-    renderEpisodes(movie);
-
-    infoPlay.onclick = () => {
-      renderEpisodes(movie);
-    };
-  }
-};
   
 const main = document.getElementById("mainContent");
 const hero = document.getElementById("hero");
